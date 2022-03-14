@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { RouteComponentProps } from '@reach/router';
 import { fetchNewCodes, fetchOffProductData, removeCode } from '../redux/offData'
-import { addMessage, removeMessage, validateData, Message } from '../redux/editorData';
+import { addMessage, removeMessage, validateData, Message, updateInterface, LayoutObject } from '../redux/editorData';
 import { RootState, AppDispatch } from '../redux/store'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,21 +23,20 @@ const ResponsiveGridLayout = WidthProvider(GridLayout);
 
 interface ProductEditionProps extends RouteComponentProps {
     campagne?: string
-    state?: string
+    state?: number
 }
-const layout = [
-    {
-        i: "c", x: 0, y: 0, w: 5, h: 5, id: 'packaging_fr_cropper', componentName: "PackagingImageCropperModule",
 
-    },
-    { i: "d", x: 5, y: 0, w: 5, h: 5, id: 'packaging_fr_view', componentName: "PackagingImageViewModule" }
-
-];
 
 const ProductEdition = (props: ProductEditionProps) => {
     const { campagne, state } = props;
 
     const dispatch = useDispatch<AppDispatch>()
+
+    React.useEffect(() => {
+        dispatch(updateInterface({ campagne, processSate: state }))
+    }, [campagne, dispatch, state])
+
+    const layout = useSelector<RootState>((state) => state.editorData.interface || []) as LayoutObject[]
 
     const codes = useSelector<RootState>((state) => state.offData.codes) as string[]
     const currentData = useSelector<RootState>((state) => {

@@ -3,7 +3,39 @@ import axios from 'axios';
 import { v4 as uuid } from "uuid";
 import components from '../../components'
 
+export const updateInterface = createAsyncThunk<void, { campagne: string; processSate: number; }>(
+    'offData/updateInterface',
+    async ({ campagne, processSate }, thunkAPI) => {
 
+        const currentState = thunkAPI.getState() as any;
+
+        thunkAPI.dispatch(updatePage({ campagne, processSate }))
+        if (currentState.editorData.fetchedInterfaces?.[campagne]) {
+            thunkAPI.dispatch(updateLayout({ layout: currentState.editorData.fetchedInterfaces?.[campagne]?.[processSate] }))
+        }
+        const response = await fetch(`https://amathjourney.com/api/off-annotation/layout/${campagne}`);
+        if (!response.ok) {
+            return
+        }
+
+        const data = await response.json()
+
+        const formattedLayout = {
+        }
+        data.result.forEach(({ campagne: fetchedCampagne, state: fetchedState, layout }) => {
+            const layoutWithI = layout.map(obj => ({ i: obj.id, ...obj }))
+            if (formattedLayout[fetchedCampagne] === undefined) {
+                formattedLayout[fetchedCampagne] = { [fetchedState]: layoutWithI }
+            }
+            else if (formattedLayout[fetchedCampagne][fetchedState] === undefined) {
+                formattedLayout[fetchedCampagne][fetchedState] = layoutWithI
+            }
+        });
+        thunkAPI.dispatch(updateLayout({ layout: formattedLayout?.[campagne]?.[processSate] }))
+        thunkAPI.dispatch(saveFetchedLayouts({ formattedLayout }))
+
+    }
+)
 export const validateData = createAsyncThunk<{ message?: string }>(
     'offData/validateData',
     async (_, thunkAPI) => {
@@ -61,8 +93,12 @@ export const validateData = createAsyncThunk<{ message?: string }>(
     }
 )
 
-interface LayoutObject {
-    i: string; x: number; y: number; w: number; h: number;
+export interface LayoutObject {
+    i: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
     id: string;
     componentName: string;
 }
@@ -75,6 +111,9 @@ export interface Message {
 interface EditorState {
     data: { [interfaceId: string]: object };
     interface: LayoutObject[];
+    fetchedInterfaces: {
+        [campagne: string]: { [state: number]: LayoutObject[] }
+    };
     page: {
         campagne: string,
         processSate: number,
@@ -82,16 +121,13 @@ interface EditorState {
     messages: Message[];
 }
 const initialState: EditorState = {
-    data: {},
     page: {
         campagne: 'eco-carrefour',
         processSate: 0,
     },
-    interface: [{
-        i: "c", x: 0, y: 0, w: 5, h: 5, id: 'packaging_fr_cropper', componentName: "PackagingImageCropperModule",
-    },
-    { i: "d", x: 5, y: 0, w: 5, h: 5, id: 'packaging_fr_view', componentName: "PackagingImageViewModule" }
-    ],
+    interface: [],
+    data: {},
+    fetchedInterfaces: {},
     messages: [],
 }
 
@@ -118,6 +154,19 @@ export const editorDataSlice = createSlice({
             const { id: idToRemove } = action.payload;
             state.messages = state.messages.filter(({ id }) => id !== idToRemove)
         },
+        updatePage: (state, action: PayloadAction<{ campagne: string, processSate: number }>) => {
+            state.page = { ...action.payload }
+        },
+        updateLayout: (state, action: PayloadAction<{ layout: LayoutObject[] }>) => {
+            state.interface = action.payload.layout
+        },
+        saveFetchedLayouts: (state, action: PayloadAction<{
+            formattedLayout: {
+                [campagne: string]: { [state: number]: LayoutObject[] }
+            };
+        }>) => {
+            state.fetchedInterfaces = { ...state.fetchedInterfaces, ...action.payload.formattedLayout }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(validateData.fulfilled, (state, { payload }) => {
@@ -135,6 +184,13 @@ export const editorDataSlice = createSlice({
     }
 })
 
-export const { upsertData, cleanData, addMessage, removeMessage } = editorDataSlice.actions
+export const {
+    upsertData,
+    cleanData,
+    addMessage,
+    removeMessage,
+    updatePage,
+    updateLayout,
+    saveFetchedLayouts } = editorDataSlice.actions
 
 export default editorDataSlice
