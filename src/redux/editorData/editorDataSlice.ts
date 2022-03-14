@@ -12,8 +12,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
         const code = state.offData.codes[0]
         const productData = state.offData.data[code]
 
-        console.log({ state })
-
         // Step 1: validate data to send
         const evalutations = state.editorData.interface.map(
             ({ componentName, id }) => components[componentName].getError(
@@ -46,8 +44,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
                 }
                 )
         } catch (error) {
-            console.log("error2")
-            console.log(error)
             return thunkAPI.rejectWithValue({ message: error.toString(), severity: 'error' })
         }
 
@@ -59,7 +55,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
                 newState: state.editorData.page.processSate + 1
             })
         } catch (error) {
-            console.log("error3")
             return thunkAPI.rejectWithValue({ message: error.toString(), severity: 'error' })
         }
 
