@@ -10,18 +10,25 @@ import { Link } from "@reach/router";
 interface StepCardProps {
     title: string;
     campagne: string;
+    description: string;
     step: number;
     todo: number;
     flagged: number;
-    isLoading: boolean;
 }
 
 const StepCard = (props: StepCardProps) => {
     return <Card sx={{ width: 250, mr: 1, mb: 1 }} variant='outlined'>
-        <CardHeader title={props.title} />
-        <CardContent>{props.isLoading ? <CircularProgress /> : (<div>{props.todo} - {props.flagged}</div>)}</CardContent>
-        <CardActions> <Link to={`/${props.campagne}/${props.step}`}>Go</Link></CardActions>
-    </Card>
+        <CardHeader title={props.title} subheader={props.description} />
+        <CardContent>
+            <div>Restant: {props.todo}
+                <br />
+                A problem: {props.flagged}
+            </div>
+        </CardContent>
+        <CardActions>
+            <Link to={`/${props.campagne}/${props.step}`}>Go</Link>
+        </CardActions>
+    </Card >
 }
 
 export default StepCard

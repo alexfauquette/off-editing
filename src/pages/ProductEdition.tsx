@@ -36,7 +36,7 @@ const ProductEdition = (props: ProductEditionProps) => {
         dispatch(updateInterface({ campagne, processSate: state }))
     }, [campagne, dispatch, state])
 
-    const layout = useSelector<RootState>((state) => state.editorData.interface || []) as LayoutObject[]
+    const layout = useSelector<RootState>((state) => state.editorData.interface?.layout || []) as LayoutObject[]
 
     const codes = useSelector<RootState>((state) => state.offData.codes) as string[]
     const currentData = useSelector<RootState>((state) => {

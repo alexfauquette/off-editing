@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { v4 as uuid } from "uuid";
 import components from '../../components'
+import { removeCode } from '../offData';
 
 export const updateInterface = createAsyncThunk<void, { campagne: string; processSate: number; }>(
     'offData/updateInterface',
@@ -11,7 +12,7 @@ export const updateInterface = createAsyncThunk<void, { campagne: string; proces
 
         thunkAPI.dispatch(updatePage({ campagne, processSate }))
         if (currentState.editorData.fetchedInterfaces?.[campagne]) {
-            thunkAPI.dispatch(updateLayout({ layout: currentState.editorData.fetchedInterfaces?.[campagne]?.[processSate] }))
+            thunkAPI.dispatch(updateLayout(currentState.editorData.fetchedInterfaces?.[campagne]?.[processSate]))
         }
         const response = await fetch(`https://amathjourney.com/api/off-annotation/layout/${campagne}`);
         if (!response.ok) {
@@ -22,16 +23,17 @@ export const updateInterface = createAsyncThunk<void, { campagne: string; proces
 
         const formattedLayout = {
         }
-        data.result.forEach(({ campagne: fetchedCampagne, state: fetchedState, layout }) => {
+
+        data.result.forEach(({ campagne: fetchedCampagne, state: fetchedState, layout, title, description }) => {
             const layoutWithI = layout.map(obj => ({ i: obj.id, ...obj }))
             if (formattedLayout[fetchedCampagne] === undefined) {
-                formattedLayout[fetchedCampagne] = { [fetchedState]: layoutWithI }
+                formattedLayout[fetchedCampagne] = { [fetchedState]: { layout: layoutWithI, title, description } }
             }
             else if (formattedLayout[fetchedCampagne][fetchedState] === undefined) {
-                formattedLayout[fetchedCampagne][fetchedState] = layoutWithI
+                formattedLayout[fetchedCampagne][fetchedState] = { layout: layoutWithI, title, description }
             }
         });
-        thunkAPI.dispatch(updateLayout({ layout: formattedLayout?.[campagne]?.[processSate] }))
+        thunkAPI.dispatch(updateLayout(formattedLayout?.[campagne]?.[processSate]))
         thunkAPI.dispatch(saveFetchedLayouts({ formattedLayout }))
 
     }
@@ -44,8 +46,15 @@ export const validateData = createAsyncThunk<{ message?: string }>(
         const code = state.offData.codes[0]
         const productData = state.offData.data[code]
 
+        if (!state.editorData.interface?.layout) {
+            return thunkAPI.rejectWithValue({ message: "Please way the interface loading", severity: 'error' })
+        }
+
+        thunkAPI.dispatch(removeCode())
+        thunkAPI.dispatch(cleanData())
+
         // Step 1: validate data to send
-        const evalutations = state.editorData.interface.map(
+        const evalutations = state.editorData.interface?.layout.map(
             ({ componentName, id }) => components[componentName].getError(
                 {
                     productData,
@@ -66,7 +75,7 @@ export const validateData = createAsyncThunk<{ message?: string }>(
 
         // TODO: make multiple tries
         try {
-            await state.editorData.interface
+            await state.editorData.interface?.layout
                 .forEach(({ componentName, id }) => {
                     console.log(state.editorData.data[id])
                     components[componentName].sendData(
@@ -107,13 +116,14 @@ export interface Message {
     status: 'info' | 'error' | 'warning';
     message: string;
 }
+interface FetchedDataInterfaces {
+    [campagne: string]: { [state: number]: { layout: LayoutObject[], title: string, description: string } }
+};
 
 interface EditorState {
     data: { [interfaceId: string]: object };
-    interface: LayoutObject[];
-    fetchedInterfaces: {
-        [campagne: string]: { [state: number]: LayoutObject[] }
-    };
+    interface?: { layout: LayoutObject[], title: string, description: string };
+    fetchedInterfaces: FetchedDataInterfaces;
     page: {
         campagne: string,
         processSate: number,
@@ -125,7 +135,7 @@ const initialState: EditorState = {
         campagne: 'eco-carrefour',
         processSate: 0,
     },
-    interface: [],
+    interface: undefined,
     data: {},
     fetchedInterfaces: {},
     messages: [],
@@ -157,13 +167,11 @@ export const editorDataSlice = createSlice({
         updatePage: (state, action: PayloadAction<{ campagne: string, processSate: number }>) => {
             state.page = { ...action.payload }
         },
-        updateLayout: (state, action: PayloadAction<{ layout: LayoutObject[] }>) => {
-            state.interface = action.payload.layout
+        updateLayout: (state, action: PayloadAction<{ layout: LayoutObject[], title: string, description: string }>) => {
+            state.interface = action.payload
         },
         saveFetchedLayouts: (state, action: PayloadAction<{
-            formattedLayout: {
-                [campagne: string]: { [state: number]: LayoutObject[] }
-            };
+            formattedLayout: FetchedDataInterfaces
         }>) => {
             state.fetchedInterfaces = { ...state.fetchedInterfaces, ...action.payload.formattedLayout }
         }
