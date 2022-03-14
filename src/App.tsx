@@ -1,26 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Router } from "@reach/router"
+
+import store from './redux/store'
+import { Provider } from 'react-redux'
+
+import GridLayout from "react-grid-layout";
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+
+import CampagneAdmin from './pages/CampagneAdmin'
+import ProductEdition from './pages/ProductEdition'
+import CampagneOverview from './pages/CampagneOverview'
+
 import './App.css';
+
+import './styles/rr.css'
+import './styles/rgl.css'
+
+
+
+// Create a client
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Provider store={store}>
+      <div>
+        <Router>
+          <CampagneAdmin path="admin/:campagne" />
+          <ProductEdition path="/:campagne/:state" />
+          <CampagneOverview path="/:campagne" />
+        </Router>
+      </div>
+    </Provider>
   );
 }
 
 export default App;
+

@@ -1,0 +1,662 @@
+{
+    "code": "59032823",
+    "product": {
+        "brands": "Nutella",
+        "countries_tags": [
+            "en:france",
+            "en:germany",
+            "en:netherlands",
+            "en:portugal",
+            "en:sweden",
+            "en:switzerland"
+        ],
+        "images": {
+            "1": {
+                "sizes": {
+                    "100": {
+                        "h": 13,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 50,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 342,
+                        "w": 2736
+                    }
+                },
+                "uploaded_t": 1586631219,
+                "uploader": "chandon"
+            },
+            "2": {
+                "sizes": {
+                    "100": {
+                        "h": 19,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 78,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 342,
+                        "w": 1764
+                    }
+                },
+                "uploaded_t": 1586631290,
+                "uploader": "openfoodfacts-contributors"
+            },
+            "22": {
+                "sizes": {
+                    "100": {
+                        "h": 49,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 195,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1596,
+                        "w": 3266
+                    }
+                },
+                "uploaded_t": 1599023996,
+                "uploader": "guguseli9"
+            },
+            "24": {
+                "sizes": {
+                    "100": {
+                        "h": 17,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 68,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 446,
+                        "w": 2633
+                    }
+                },
+                "uploaded_t": 1600073391,
+                "uploader": "loran999"
+            },
+            "25": {
+                "sizes": {
+                    "100": {
+                        "h": 83,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 333,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1550,
+                        "w": 1863
+                    }
+                },
+                "uploaded_t": 1600073471,
+                "uploader": "loran999"
+            },
+            "26": {
+                "sizes": {
+                    "100": {
+                        "h": 75,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 300,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 3024,
+                        "w": 4032
+                    }
+                },
+                "uploaded_t": 1600696381,
+                "uploader": "openfoodfacts-contributors"
+            },
+            "27": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 78
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 313
+                    },
+                    "full": {
+                        "h": 1280,
+                        "w": 1000
+                    }
+                },
+                "uploaded_t": 1601213345,
+                "uploader": "ethic-advisor"
+            },
+            "28": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 78
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 313
+                    },
+                    "full": {
+                        "h": 1280,
+                        "w": 1000
+                    }
+                },
+                "uploaded_t": 1601213346,
+                "uploader": "ethic-advisor"
+            },
+            "29": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1500,
+                        "w": 1500
+                    }
+                },
+                "uploaded_t": 1607084614,
+                "uploader": "org-ferrero-france-commerciale"
+            },
+            "3": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "uploaded_t": 1589783505,
+                "uploader": "openfoodfacts-contributors"
+            },
+            "30": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 2000,
+                        "w": 2000
+                    }
+                },
+                "uploaded_t": 1607084615,
+                "uploader": "org-ferrero-france-commerciale"
+            },
+            "31": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 2000,
+                        "w": 2000
+                    }
+                },
+                "uploaded_t": 1607084616,
+                "uploader": "org-ferrero-france-commerciale"
+            },
+            "32": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 100
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1500,
+                        "w": 1500
+                    }
+                },
+                "uploaded_t": 1607084616,
+                "uploader": "org-ferrero-france-commerciale"
+            },
+            "33": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "uploaded_t": 1618604173,
+                "uploader": "nicolasarq"
+            },
+            "34": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "uploaded_t": 1618604190,
+                "uploader": "nicolasarq"
+            },
+            "35": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "uploaded_t": 1618604238,
+                "uploader": "nicolasarq"
+            },
+            "36": {
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "uploaded_t": 1618604257,
+                "uploader": "nicolasarq"
+            },
+            "front_de": {
+                "angle": "0",
+                "geometry": "0x0-0-0",
+                "imgid": "27",
+                "normalize": "false",
+                "rev": "102",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 78
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 156
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 313
+                    },
+                    "full": {
+                        "h": 1280,
+                        "w": 1000
+                    }
+                },
+                "white_magic": "false",
+                "x1": "0",
+                "x2": "0",
+                "y1": "0",
+                "y2": "0"
+            },
+            "front_en": {
+                "angle": "0",
+                "geometry": "0x0-0-0",
+                "imgid": "27",
+                "normalize": "false",
+                "rev": "103",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 78
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 156
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 313
+                    },
+                    "full": {
+                        "h": 1280,
+                        "w": 1000
+                    }
+                },
+                "white_magic": "false",
+                "x1": "0",
+                "x2": "0",
+                "y1": "0",
+                "y2": "0"
+            },
+            "front_es": {
+                "angle": 0,
+                "coordinates_image_size": "400",
+                "geometry": "0x0--3--3",
+                "imgid": "29",
+                "normalize": "false",
+                "rev": "156",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 63
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 125
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 250
+                    },
+                    "full": {
+                        "h": 1368,
+                        "w": 856
+                    }
+                },
+                "white_magic": "false",
+                "x1": "-1",
+                "x2": "-1",
+                "y1": "-1",
+                "y2": "-1"
+            },
+            "front_fr": {
+                "angle": 0,
+                "coordinates_image_size": "400",
+                "geometry": "0x0--5--5",
+                "imgid": "30",
+                "normalize": "false",
+                "rev": "155",
+                "sizes": {
+                    "100": {
+                        "h": 93,
+                        "w": 100
+                    },
+                    "200": {
+                        "h": 185,
+                        "w": 200
+                    },
+                    "400": {
+                        "h": 371,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1728,
+                        "w": 1864
+                    }
+                },
+                "white_magic": "false",
+                "x1": "-1",
+                "x2": "-1",
+                "y1": "-1",
+                "y2": "-1"
+            },
+            "front_sv": {
+                "angle": 0,
+                "geometry": "0x0--1--1",
+                "imgid": "3",
+                "normalize": null,
+                "rev": "78",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 150
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "white_magic": null,
+                "x1": "-1",
+                "x2": "-1",
+                "y1": "-1",
+                "y2": "-1"
+            },
+            "ingredients_de": {
+                "angle": "0",
+                "geometry": "2247x458-65-516",
+                "imgid": "22",
+                "normalize": "false",
+                "rev": "106",
+                "sizes": {
+                    "100": {
+                        "h": 20,
+                        "w": 100
+                    },
+                    "200": {
+                        "h": 41,
+                        "w": 200
+                    },
+                    "400": {
+                        "h": 82,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 458,
+                        "w": 2247
+                    }
+                },
+                "white_magic": "false",
+                "x1": "65.26544273722571",
+                "x2": "2312.2025355954142",
+                "y1": "516.6194231684158",
+                "y2": "974.4093521990957"
+            },
+            "ingredients_fr": {
+                "angle": 0,
+                "coordinates_image_size": "full",
+                "geometry": "0x0--1--1",
+                "imgid": "36",
+                "normalize": null,
+                "rev": "136",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 75
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 150
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 300
+                    },
+                    "full": {
+                        "h": 4032,
+                        "w": 3024
+                    }
+                },
+                "white_magic": null,
+                "x1": "-1",
+                "x2": "-1",
+                "y1": "-1",
+                "y2": "-1"
+            },
+            "ingredients_sv": {
+                "angle": "0",
+                "geometry": "0x0-0-0",
+                "imgid": "2",
+                "normalize": "false",
+                "rev": "104",
+                "sizes": {
+                    "100": {
+                        "h": 19,
+                        "w": 100
+                    },
+                    "200": {
+                        "h": 39,
+                        "w": 200
+                    },
+                    "400": {
+                        "h": 78,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 342,
+                        "w": 1764
+                    }
+                },
+                "white_magic": "false",
+                "x1": "0",
+                "x2": "0",
+                "y1": "0",
+                "y2": "0"
+            },
+            "nutrition_fr": {
+                "angle": "0",
+                "coordinates_image_size": "full",
+                "geometry": "2878x2100-146-891",
+                "imgid": "35",
+                "normalize": "false",
+                "rev": "142",
+                "sizes": {
+                    "100": {
+                        "h": 73,
+                        "w": 100
+                    },
+                    "200": {
+                        "h": 146,
+                        "w": 200
+                    },
+                    "400": {
+                        "h": 292,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 2100,
+                        "w": 2878
+                    }
+                },
+                "white_magic": "false",
+                "x1": "146.96518798828126",
+                "x2": "3024",
+                "y1": "891.8875854492188",
+                "y2": "2991.8876879882814"
+            },
+            "packaging_en": {
+                "angle": "0",
+                "coordinates_image_size": "full",
+                "geometry": "0x0-0-0",
+                "imgid": "27",
+                "normalize": "false",
+                "rev": "163",
+                "sizes": {
+                    "100": {
+                        "h": 100,
+                        "w": 78
+                    },
+                    "200": {
+                        "h": 200,
+                        "w": 156
+                    },
+                    "400": {
+                        "h": 400,
+                        "w": 313
+                    },
+                    "full": {
+                        "h": 1280,
+                        "w": 1000
+                    }
+                },
+                "white_magic": "false",
+                "x1": "0",
+                "x2": "0",
+                "y1": "0",
+                "y2": "0"
+            },
+            "packaging_fr": {
+                "angle": "0",
+                "coordinates_image_size": "full",
+                "geometry": "2519x1137-320-1555",
+                "imgid": "34",
+                "normalize": "false",
+                "rev": "143",
+                "sizes": {
+                    "100": {
+                        "h": 45,
+                        "w": 100
+                    },
+                    "200": {
+                        "h": 90,
+                        "w": 200
+                    },
+                    "400": {
+                        "h": 181,
+                        "w": 400
+                    },
+                    "full": {
+                        "h": 1137,
+                        "w": 2519
+                    }
+                },
+                "white_magic": "false",
+                "x1": "320.56525634765626",
+                "x2": "2839.200205078125",
+                "y1": "1555.3125192260743",
+                "y2": "2692.1126046752934"
+            }
+        },
+        "ingredients_text": "sugar, palm oil, hazelnuts (13%), skummjólkspulver (8,7 per cent), fettreducerad cocoa powder (7,4%), emulsifier: lecithins (soya), vanillin,",
+        "product_name": "Nutella"
+    },
+    "status": 1,
+    "status_verbose": "product found"
+}
