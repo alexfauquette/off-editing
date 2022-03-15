@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { RouteComponentProps } from '@reach/router';
-import {
-    useQuery,
-} from 'react-query'
+
 import StepCard from '../components/StepCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
@@ -11,23 +9,6 @@ import { updateInterface } from '../redux/editorData';
 
 interface CampagneAdminProps extends RouteComponentProps {
     campagne?: string
-}
-
-const titles = {
-    "eco-carrefour": ["Select Image", "Annotate Image"]
-}
-
-const getEmptySteps = (campagne) => {
-    if (!campagne || !titles[campagne]) {
-        return []
-    }
-    return titles[campagne].map((title, step) => ({
-        title,
-        campagne,
-        step,
-        todo: 0,
-        flagged: 0,
-    }))
 }
 
 const CampagneOverview = ({ campagne }: CampagneAdminProps) => {

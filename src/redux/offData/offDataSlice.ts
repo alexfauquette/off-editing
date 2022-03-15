@@ -8,11 +8,12 @@ interface DataInterface {
 interface FetchCodes {
     result: DataInterface
 }
-const fetchNewCodes = createAsyncThunk<FetchCodes>(
+const fetchNewCodes = createAsyncThunk<FetchCodes, {
+    campagne: string,
+    state: number
+}>(
     'offData/fetchNewCodes',
-    async (key, thunkAPI) => {
-        const campagne = 'eco-carrefour'
-        const state = 0;
+    async ({ campagne, state }, thunkAPI) => {
         const response = await fetch(`https://amathjourney.com/api/off-annotation/data/${campagne}?state=${state}&flag=false`);
         const data = await response.json()
         if (response.ok) {

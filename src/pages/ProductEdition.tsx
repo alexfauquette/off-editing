@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { RouteComponentProps } from '@reach/router';
 import { fetchNewCodes, fetchOffProductData, removeCode } from '../redux/offData'
-import { addMessage, removeMessage, validateData, Message, updateInterface, LayoutObject } from '../redux/editorData';
+import { removeMessage, validateData, Message, updateInterface, LayoutObject } from '../redux/editorData';
 import { RootState, AppDispatch } from '../redux/store'
 
 import { useDispatch, useSelector } from 'react-redux'
-
 
 import GridLayout, { WidthProvider } from "react-grid-layout";
 import Box from '@mui/material/Box'
@@ -15,8 +14,81 @@ import Alert from '@mui/material/Alert'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+
+import AssistantPhotoRoundedIcon from '@mui/icons-material/AssistantPhotoRounded';
 
 import components from '../components'
+import { TextField } from '@mui/material';
+import axios from 'axios';
+
+const possibleIssues = [
+    'Pas de bonne image',
+    "N'a rien à faire sur OFF",
+]
+const ProblemDialogue = ({ open, close, skip, sendFlag }) => {
+    const [otherLabel, setOtherLabel] = React.useState('')
+
+    return <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={open}
+        onClose={close}
+    >
+        <DialogTitle>What is your problem</DialogTitle>
+        <DialogContent>
+            <Box
+                component="form"
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    m: 'auto',
+                    width: 'fit-content',
+                }}
+            >
+                {
+                    possibleIssues.map(label => <Button
+                        sx={{
+                            mb: 1
+                        }}
+                        variant='outlined'
+                        key={label}
+                        onClick={() => {
+                            sendFlag(label)
+                            close();
+                            skip();
+                        }}>{label}</Button>)
+                }
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                }}>
+                    <TextField label="Autre..." value={otherLabel} onChange={(event) => {
+                        setOtherLabel(event.target.value);
+                    }} />
+
+                    <Button disabled={!otherLabel}
+                        onClick={() => {
+                            sendFlag(otherLabel)
+                            close();
+                            skip();
+                        }}
+                    >Envoyer</Button>
+                </Box>
+            </Box>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={() => { close() }}>Close</Button>
+        </DialogActions>
+    </Dialog>
+}
+
+
+
+
 
 const ResponsiveGridLayout = WidthProvider(GridLayout);
 
@@ -62,9 +134,9 @@ const ProductEdition = (props: ProductEditionProps) => {
 
     React.useEffect(() => {
         if (codes.length < 10) {
-            dispatch(fetchNewCodes())
+            dispatch(fetchNewCodes({ campagne, state }))
         }
-    }, [dispatch, codes.length])
+    }, [dispatch, codes.length, campagne, state])
 
     const skip = () => {
         dispatch(removeCode())
@@ -76,13 +148,28 @@ const ProductEdition = (props: ProductEditionProps) => {
     const handleCloseMessage = (id) => {
         dispatch(removeMessage({ id }))
     }
-    const handleAddMessage = (message, status = 'info') => {
-        dispatch(addMessage({ message, status } as Message))
-    }
+
+    const [assistantIsOpen, setAssistantIsOpen] = React.useState(false)
+    const handleOpenAssistant = React.useCallback(() => setAssistantIsOpen(true), [setAssistantIsOpen])
+    const handleCloseAssistant = React.useCallback(() => setAssistantIsOpen(false), [setAssistantIsOpen])
+
+    const code = codes?.[0]
+    const sendFlag = React.useCallback((label) => {
+        if (!campagne || !code) {
+            return
+        }
+        axios.post(`https://amathjourney.com/api/off-annotation/${campagne}/${code}`, {
+            data: { label },
+            flag: true,
+            newState: state
+        })
+    }, [code, campagne, state])
+
     const editorState = useSelector<RootState>(state => state?.editorData.data)
     const messagesState = useSelector<RootState>(state => state.editorData.messages)
     console.log(messagesState)
     return (<div style={{ position: 'relative', minHeight: '100vh' }}>
+        <ProblemDialogue open={assistantIsOpen} close={handleCloseAssistant} skip={skip} sendFlag={sendFlag} />
         {(messagesState as Message[]).map(({ id, status, message }) => <Snackbar key={id} open autoHideDuration={2000} onClose={() => handleCloseMessage(id)}>
             <Alert severity={status} sx={{ width: '100%' }}>
                 {message}
@@ -131,15 +218,14 @@ const ProductEdition = (props: ProductEditionProps) => {
         }
         <Paper sx={{ position: "sticky", bottom: 0, zIndex: 1 }}>
             <Box sx={{ height: "2rem", p: 1, justifyContent: 'end', display: 'flex', position: "sticky", bottom: 0 }}>
-                {['info', 'error', 'warning'].map(status => <Button onClick={() => handleAddMessage("toto", status)}>
-                    {status}
-                </Button>)}
-                <Button onClick={validate} variant='outlined'>
-                    validate
+                <Button onClick={handleOpenAssistant} variant='outlined' sx={{ mr: 1 }}>
+                    I have a Problem <AssistantPhotoRoundedIcon />
                 </Button >
-
-                <Button onClick={skip} variant='outlined'>
+                <Button onClick={skip} variant='outlined' sx={{ mr: 1 }}>
                     Skip
+                </Button >
+                <Button onClick={validate} variant='outlined' sx={{ mr: 1 }}>
+                    validate
                 </Button >
             </Box >
         </Paper >

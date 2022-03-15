@@ -77,7 +77,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
         try {
             await state.editorData.interface?.layout
                 .forEach(({ componentName, id }) => {
-                    console.log(state.editorData.data[id])
                     components[componentName].sendData(
                         {
                             productData, state: state.editorData.data[id]

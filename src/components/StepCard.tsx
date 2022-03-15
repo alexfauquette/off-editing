@@ -4,7 +4,6 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from "@reach/router";
 
 interface StepCardProps {
