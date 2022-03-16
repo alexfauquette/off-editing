@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { RouteComponentProps } from '@reach/router';
 import { fetchNewCodes, fetchOffProductData, removeCode } from '../redux/offData'
-import { removeMessage, validateData, Message, updateInterface, LayoutObject } from '../redux/editorData';
+import { cleanData, removeMessage, validateData, Message, updateInterface, LayoutObject } from '../redux/editorData';
 import { RootState, AppDispatch } from '../redux/store'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -108,8 +108,17 @@ const ProductEdition = (props: ProductEditionProps) => {
         dispatch(updateInterface({ campagne, processSate: state }))
     }, [campagne, dispatch, state])
 
-    const layout = useSelector<RootState>((state) => state.editorData.interface?.layout || []) as LayoutObject[]
-
+    const layoutBase = useSelector<RootState>((state) => state.editorData.interface?.layout || []) as LayoutObject[]
+    const layout = [...layoutBase, {
+        componentName: "PackagingTextInputModule",
+        h: 5,
+        i: "packaging_fr_text",
+        id: "packaging_fr_text",
+        w: 5,
+        x: 5,
+        y: 0,
+    }]
+    console.log(layout)
     const codes = useSelector<RootState>((state) => state.offData.codes) as string[]
     const currentData = useSelector<RootState>((state) => {
         if (state.offData.codes.length < 1) {
@@ -128,7 +137,8 @@ const ProductEdition = (props: ProductEditionProps) => {
 
     React.useEffect(() => {
         codesToFetch.forEach((code: string) => {
-            dispatch(fetchOffProductData({ code, requestedFields: ['product_name', 'images', 'image_packaging_url'] }))
+            // TODO: this list of values should be computed from layout components
+            dispatch(fetchOffProductData({ code, requestedFields: ['product_name', 'images', 'image_packaging_url', 'packaging'] }))
         });
     }, [dispatch, codesToFetch])
 
@@ -140,6 +150,7 @@ const ProductEdition = (props: ProductEditionProps) => {
 
     const skip = () => {
         dispatch(removeCode())
+        dispatch(cleanData())
     }
     const validate = () => {
         dispatch(validateData())
@@ -166,8 +177,9 @@ const ProductEdition = (props: ProductEditionProps) => {
     }, [code, campagne, state])
 
     const editorState = useSelector<RootState>(state => state?.editorData.data)
+    const offState = useSelector<RootState>(state => state?.offData?.data?.[code])
     const messagesState = useSelector<RootState>(state => state.editorData.messages)
-    console.log(messagesState)
+
     return (<div style={{ position: 'relative', minHeight: '100vh' }}>
         <ProblemDialogue open={assistantIsOpen} close={handleCloseAssistant} skip={skip} sendFlag={sendFlag} />
         {(messagesState as Message[]).map(({ id, status, message }) => <Snackbar key={id} open autoHideDuration={2000} onClose={() => handleCloseMessage(id)}>
@@ -191,6 +203,10 @@ const ProductEdition = (props: ProductEditionProps) => {
                 </Box>
             </Box>
             <Paper>
+
+                <pre>
+                    {JSON.stringify((offState as any)?.packaging, null, 2)}
+                </pre>
                 <pre>
                     {JSON.stringify(editorState, null, 2)}
                 </pre>
@@ -212,8 +228,6 @@ const ProductEdition = (props: ProductEditionProps) => {
                 </Paper>
             </Box>
             )}
-
-
         </ResponsiveGridLayout > : null
         }
         <Paper sx={{ position: "sticky", bottom: 0, zIndex: 1 }}>
