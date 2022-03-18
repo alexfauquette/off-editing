@@ -1,13 +1,14 @@
 import * as React from "react";
-import { RouteComponentProps } from "@reach/router";
-import { useQuery } from "react-query";
+import { useParams } from 'react-router-dom'
 
-interface CampagneAdminProps extends RouteComponentProps {
+interface CampagneAdminProps {
   campagne?: string;
 }
 
-const CampagneAdmin = (props: CampagneAdminProps) => {
-  return <p>campagne: {props.campagne}</p>;
+const CampagneAdmin = (props) => {
+  const { campagne }: CampagneAdminProps = useParams();
+
+  return <p>campagne: {campagne}</p>;
 };
 
 export default CampagneAdmin;

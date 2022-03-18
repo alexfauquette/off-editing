@@ -1,16 +1,18 @@
 import * as React from "react";
-import { RouteComponentProps } from "@reach/router";
+import { useParams } from 'react-router-dom'
 
 import StepCard from "../components/StepCard";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { updateInterface } from "../redux/editorData";
 
-interface CampagneAdminProps extends RouteComponentProps {
+interface CampagneAdminProps {
   campagne?: string;
 }
 
-const CampagneOverview = ({ campagne }: CampagneAdminProps) => {
+const CampagneOverview = (props) => {
+  console.log(props)
+  const { campagne }: CampagneAdminProps = useParams();;
   const dispatch = useDispatch<AppDispatch>();
 
   React.useEffect(() => {

@@ -1,16 +1,15 @@
 import * as React from "react";
 
-import { RouteComponentProps } from "@reach/router";
-
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link } from "@reach/router";
+import { Link } from "react-router-dom";
+
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
-const WelcomePage = (props: RouteComponentProps) => {
+const WelcomePage = () => {
   const [loading, setLoading] = React.useState(true);
   const [campagnes, setCampagnes] = React.useState<string[]>([]);
 

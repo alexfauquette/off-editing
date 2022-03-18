@@ -1,5 +1,4 @@
 import * as React from "react";
-import { RouteComponentProps } from "@reach/router";
 import {
   fetchNewCodes,
   fetchOffProductData,
@@ -14,6 +13,7 @@ import {
   LayoutObject,
 } from "../redux/editorData";
 import { RootState, AppDispatch } from "../redux/store";
+import { useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -111,13 +111,13 @@ const ProblemDialogue = ({ open, close, skip, sendFlag }) => {
 
 const ResponsiveGridLayout = WidthProvider(GridLayout);
 
-interface ProductEditionProps extends RouteComponentProps {
+interface ProductEditionParams {
   campagne?: string;
   state?: number;
 }
 
-const ProductEdition = (props: ProductEditionProps) => {
-  const { campagne, state } = props;
+const ProductEdition = (props) => {
+  const { campagne, state }: ProductEditionParams = useParams();
 
   const dispatch = useDispatch<AppDispatch>();
 

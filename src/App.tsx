@@ -1,6 +1,9 @@
 import React from "react";
-import { Router } from "@reach/router";
-
+import {
+  HashRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 import store from "./redux/store";
 import { Provider } from "react-redux";
 
@@ -18,12 +21,30 @@ function App() {
   return (
     <Provider store={store}>
       <div>
-        <Router>
-          <WelcomePage path="/" />
-          <CampagneAdmin path="admin/:campagne" />
-          <ProductEdition path="/:campagne/:state" />
-          <CampagneOverview path="/:campagne" />
-        </Router>
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={
+
+              <WelcomePage />
+            }
+            />
+            <Route path="admin/:campagne" element={
+
+              <CampagneAdmin />
+            }
+            />
+            <Route path="/:campagne/:state" element={
+
+              <ProductEdition />
+            }
+            />
+            <Route path="/:campagne" element={
+
+              <CampagneOverview />
+            }
+            />
+          </Routes>
+        </HashRouter>
       </div>
     </Provider>
   );
