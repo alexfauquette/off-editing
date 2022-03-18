@@ -1,1 +1,1 @@
-export * from './editorDataSlice'
+export * from "./editorDataSlice";

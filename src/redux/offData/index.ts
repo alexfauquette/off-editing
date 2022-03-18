@@ -1,1 +1,1 @@
-export * from './offDataSlice'
+export * from "./offDataSlice";
