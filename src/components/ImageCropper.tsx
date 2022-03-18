@@ -177,7 +177,8 @@ export const sendData = ({ productData, state: { imageId, crop: cropData } }) =>
 const module = {
     component: Component,
     getError,
-    sendData
+    sendData,
+    data_needed
 }
 
 export default module

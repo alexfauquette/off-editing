@@ -5,6 +5,7 @@ export interface ValidationInput {
 
 export interface Component {
     component: (props: any) => JSX.Element;
-    getError: (input: ValidationInput) => void | { message: string, severity: 'error' | 'warning' }
-    sendData: (input: ValidationInput) => void
+    getError: (input: ValidationInput) => void | { message: string, severity: 'error' | 'warning' };
+    sendData: (input: ValidationInput) => void;
+    data_needed: string[];
 }

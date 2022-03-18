@@ -108,17 +108,9 @@ const ProductEdition = (props: ProductEditionProps) => {
         dispatch(updateInterface({ campagne, processSate: state }))
     }, [campagne, dispatch, state])
 
-    const layoutBase = useSelector<RootState>((state) => state.editorData.interface?.layout || []) as LayoutObject[]
-    const layout = [...layoutBase, {
-        componentName: "PackagingTextInputModule",
-        h: 5,
-        i: "packaging_fr_text",
-        id: "packaging_fr_text",
-        w: 5,
-        x: 5,
-        y: 0,
-    }]
-    console.log(layout)
+    const layout = useSelector<RootState>((state) => state.editorData.interface?.layout || []) as LayoutObject[]
+
+
     const codes = useSelector<RootState>((state) => state.offData.codes) as string[]
     const currentData = useSelector<RootState>((state) => {
         if (state.offData.codes.length < 1) {
@@ -127,6 +119,10 @@ const ProductEdition = (props: ProductEditionProps) => {
         return state.offData.data[state.offData.codes[0]]
     }) as any
 
+    const dataToFetch = React.useMemo(() => layout.flatMap(
+        ({ componentName }) => components[componentName].data_needed
+    )
+        , [layout])
     const codesToFetch = useSelector<RootState>((state) => {
         if (state.offData.codes.length < 1) {
             return []
@@ -135,12 +131,20 @@ const ProductEdition = (props: ProductEditionProps) => {
         return state.offData.codes.slice(0, lastIndex).filter(code => state.offData.data[code] === undefined);
     }) as string[]
 
+
     React.useEffect(() => {
         codesToFetch.forEach((code: string) => {
-            // TODO: this list of values should be computed from layout components
-            dispatch(fetchOffProductData({ code, requestedFields: ['product_name', 'images', 'image_packaging_url', 'packaging'] }))
+            if (dataToFetch) {
+                const setOfkeysToFetch = new Set(dataToFetch)
+
+                dispatch(
+                    fetchOffProductData({
+                        code, requestedFields: ['product_name', ...Array.from(setOfkeysToFetch)]
+                    })
+                )
+            }
         });
-    }, [dispatch, codesToFetch])
+    }, [dispatch, codesToFetch, dataToFetch])
 
     React.useEffect(() => {
         if (codes.length < 10) {

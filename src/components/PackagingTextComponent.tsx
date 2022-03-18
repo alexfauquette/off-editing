@@ -71,7 +71,8 @@ export const sendData = ({ productData, state: { text } }) => {
 const module = {
     component: PackagingTextComponent,
     getError,
-    sendData
+    sendData,
+    data_needed
 }
 
 export default module

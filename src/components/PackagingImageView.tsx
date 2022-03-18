@@ -6,7 +6,7 @@ import { RootState } from '../redux/store'
 import { useSelector } from 'react-redux'
 
 
-export const data_needed = ["images"]
+export const data_needed = ["image_packaging_url"]
 
 export interface stateInterface { imageId?: string; cropData?: object }
 
@@ -74,6 +74,7 @@ const module = {
     component: PackagingImageView,
     getError,
     sendData,
+    data_needed
 };
 
 export default module;
