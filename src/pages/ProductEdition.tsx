@@ -225,6 +225,11 @@ const ProductEdition = (props) => {
     (state) => state.editorData.messages
   );
 
+  const subState = { ...(offState as object) }
+  if ((offState as any)?.images) {
+    // @ts-ignore
+    subState.images = subState.images?.packaging_fr?.imgid
+  }
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
       <ProblemDialogue
@@ -270,7 +275,7 @@ const ProductEdition = (props) => {
           </Box>
         </Box>
         <Paper>
-          <pre>{JSON.stringify((offState as any)?.packaging, null, 2)}</pre>
+          <pre>{JSON.stringify(subState, null, 2)}</pre>
           <pre>{JSON.stringify(editorState, null, 2)}</pre>
         </Paper>
       </Paper>
