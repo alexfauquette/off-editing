@@ -47,6 +47,7 @@ export const Component = (props: ComponentProps) => {
   }) as any;
 
   const productDataIsLoading = !productData || productData.isLoading;
+  const code = productData.code;
 
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [imageId, setImageId] = React.useState<string>();
@@ -61,8 +62,8 @@ export const Component = (props: ComponentProps) => {
   );
 
   React.useEffect(() => {
-    setImageId(imgid);
-  }, [imgid, setImageId]);
+    setImageId(imgid || undefined);
+  }, [code, imgid]);
 
   React.useEffect(() => {
     dispatch(upsertData({ editorId: props.id, data: { imageId } }));
@@ -84,6 +85,7 @@ export const Component = (props: ComponentProps) => {
       setIsReady(false);
     }
   }, [isReady, reset]);
+
   const src = getImageUrl(
     productData?.code,
     imageId || imgid,
@@ -100,6 +102,13 @@ export const Component = (props: ComponentProps) => {
   };
 
   const [imageListVisible, setImageListVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!productDataIsLoading) {
+      setImageListVisible(imgid === undefined);
+    }
+  }, [productDataIsLoading, imgid])
+
   const openImages = () => {
     setImageListVisible(true);
   };
@@ -109,13 +118,18 @@ export const Component = (props: ComponentProps) => {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <div style={{ height: "2rem", width: "100%" }}></div>
+      <div style={{ height: "2rem", width: "100%" }}>{imageId}</div>
+      <div style={{ height: "2rem", width: "100%" }}>{src}</div>
       <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
         {productDataIsLoading ? (
           <CircularProgress />
         ) : (
           <Cropper
-            src={src}
+            src={src || `${process.env.PUBLIC_URL}/assets/not_selected.png`}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`
+            }}
             style={{ height: "100%", width: "100%" }}
             guides={false}
             autoCrop={true}
@@ -173,9 +187,9 @@ export const sendData = ({
     const x2 = cropData.x + cropData.width;
     const y2 = cropData.y + cropData.height;
     const coordinate = `x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
-    // axios.post(`https://world.openfoodfacts.net/cgi/product_image_crop.pl?id: packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`)
+    // axios.post(`https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`)
     console.log({
-      post: `https://world.openfoodfacts.net/cgi/product_image_crop.pl?id: packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`,
+      post: `https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`,
     });
   }
 };

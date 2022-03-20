@@ -122,6 +122,10 @@ export const validateData = createAsyncThunk<{ message?: string }>(
           newState: state.editorData.page.processSate + 1,
         }
       );
+      return {
+        message: `Product ${code} updated`,
+        severity: "info",
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue({
         message: error.toString(),
@@ -231,7 +235,8 @@ export const editorDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(validateData.fulfilled, (state, { payload }) => {
+    builder.addCase(validateData.fulfilled, (state, { payload, ...rest }) => {
+      console.log({ ...rest })
       const id = uuid();
       state.messages.push({ id, message: payload.message, status: "info" });
     });
@@ -239,10 +244,11 @@ export const editorDataSlice = createSlice({
       const id = uuid();
       state.messages.push({ id, message: payload.message, status: payload.severity });
     });
-    builder.addCase(validateData.pending, (state) => {
-      const id = uuid();
-      state.messages.push({ id, message: "", status: "error" });
-    });
+    // builder.addCase(validateData.pending, (state, rest) => {
+    //   console.log(rest)
+    //   const id = uuid();
+    //   state.messages.push({ id, message: "", status: "error" });
+    // });
   },
 });
 

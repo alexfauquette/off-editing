@@ -89,7 +89,11 @@ const ImageSelector = ({
               }}
             >
               <img
-                src={getImageUrl(code, selectedId, "full")}
+                src={getImageUrl(code, selectedId, "full") || `${process.env.PUBLIC_URL}/assets/not_selected.png`}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`
+                }}
                 style={{
                   objectFit: "contain",
                   width: "100%",

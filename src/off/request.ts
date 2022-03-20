@@ -10,11 +10,10 @@ const slicedCode = (code) => {
   return code;
 };
 
-export const getImageUrl = (code, imageId, coordinates_image_size) => {
-  if (code == null || imageId == null || coordinates_image_size == null) {
+export const getImageUrl = (code, imageId, coordinates_image_size = "full") => {
+  if (code == null || imageId == null) {
     return "";
   }
-  return `${OFF_IMAGE_URL}/${slicedCode(code)}/${imageId}${
-    coordinates_image_size === "full" ? "" : `.${coordinates_image_size}`
-  }.jpg`;
+  return `${OFF_IMAGE_URL}/${slicedCode(code)}/${imageId}${coordinates_image_size === "full" ? "" : `.${coordinates_image_size}`
+    }.jpg`;
 };
