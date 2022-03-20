@@ -1,3 +1,5 @@
+import { getLang } from '../utils'
+
 export const OFF_IMAGE_URL = "https://images.openfoodfacts.org/images/products";
 
 const slicedCode = (code) => {
@@ -17,3 +19,16 @@ export const getImageUrl = (code, imageId, coordinates_image_size = "full") => {
   return `${OFF_IMAGE_URL}/${slicedCode(code)}/${imageId}${coordinates_image_size === "full" ? "" : `.${coordinates_image_size}`
     }.jpg`;
 };
+
+
+export const getProductUrl = (barcode: string) => {
+  const lang = getLang();
+  return `https://world${lang === "en" ? "" : "-" + lang
+    }.openfoodfacts.org/product/${barcode}`;
+}
+
+export const getProductEditUrl = (barcode: string) => {
+  const lang = getLang();
+  return `https://world${lang === "en" ? "" : "-" + lang
+    }.openfoodfacts.org/cgi/product.pl?type=edit&code=${barcode}`;
+}

@@ -12,6 +12,11 @@ import {
   updateInterface,
   LayoutObject,
 } from "../redux/editorData";
+import {
+  getProductUrl,
+  getProductEditUrl
+} from '../off/request'
+
 import { RootState, AppDispatch } from "../redux/store";
 import { useParams } from 'react-router-dom'
 
@@ -270,18 +275,22 @@ const ProductEdition = (props) => {
             </span>
           </Box>
           <Box sx={{ m: "1rem" }}>
-            <Link href="#" underline="none" sx={{ mr: "1rem" }}>
-              See
-            </Link>
-            <Link href="#" underline="none">
-              Edit
-            </Link>
+            {code && <>
+              <Link target="_blank" href={getProductUrl(code)} underline="none" sx={{ mr: "1rem" }}>
+                See
+              </Link>
+              <Link target="_blank" href={getProductEditUrl(code)} underline="none">
+                Edit
+              </Link>
+            </>
+            }
           </Box>
         </Box>
-        <Paper>
-          <pre>{JSON.stringify(subState, null, 2)}</pre>
-          <pre>{JSON.stringify(editorState, null, 2)}</pre>
-        </Paper>
+        {
+          process.env.NODE_ENV === 'development' && (<Paper>
+            <pre>{JSON.stringify(subState, null, 2)}</pre>
+            <pre>{JSON.stringify(editorState, null, 2)}</pre>
+          </Paper>)}
       </Paper>
       {currentData ? (
         <ResponsiveGridLayout
