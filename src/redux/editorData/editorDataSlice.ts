@@ -7,8 +7,9 @@ import { removeCode } from "../offData";
 
 export const updateInterface = createAsyncThunk<
   void,
-  { campagne: string; processSate: number }, {
-    rejectValue: ErrorInterface
+  { campagne: string; processSate: number },
+  {
+    rejectValue: ErrorInterface;
   }
 >("offData/updateInterface", async ({ campagne, processSate }, thunkAPI) => {
   const currentState = thunkAPI.getState() as any;
@@ -82,7 +83,10 @@ export const validateData = createAsyncThunk<{ message?: string }>(
 
     // If error detected returns the error message
     const errorIndex = evalutations.findIndex(
-      (errorMessage) => errorMessage && errorMessage.severity && errorMessage.severity === "error"
+      (errorMessage) =>
+        errorMessage &&
+        errorMessage.severity &&
+        errorMessage.severity === "error"
     );
     if (errorIndex >= 0) {
       return thunkAPI.rejectWithValue(evalutations[errorIndex]);
@@ -110,7 +114,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
         severity: "error",
       });
     }
-
 
     // Move to new state
     try {
@@ -236,14 +239,21 @@ export const editorDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(validateData.fulfilled, (state, { payload, ...rest }) => {
-      console.log({ ...rest })
+      console.log({ ...rest });
       const id = uuid();
       state.messages.push({ id, message: payload.message, status: "info" });
     });
-    builder.addCase(validateData.rejected, (state, { payload }: { payload }) => {
-      const id = uuid();
-      state.messages.push({ id, message: payload.message, status: payload.severity });
-    });
+    builder.addCase(
+      validateData.rejected,
+      (state, { payload }: { payload }) => {
+        const id = uuid();
+        state.messages.push({
+          id,
+          message: payload.message,
+          status: payload.severity,
+        });
+      }
+    );
     // builder.addCase(validateData.pending, (state, rest) => {
     //   console.log(rest)
     //   const id = uuid();

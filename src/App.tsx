@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  HashRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import store from "./redux/store";
 import { Provider } from "react-redux";
 
@@ -23,26 +19,10 @@ function App() {
       <div>
         <HashRouter>
           <Routes>
-            <Route path="/" element={
-
-              <WelcomePage />
-            }
-            />
-            <Route path="admin/:campagne" element={
-
-              <CampagneAdmin />
-            }
-            />
-            <Route path="/:campagne/:state" element={
-
-              <ProductEdition />
-            }
-            />
-            <Route path="/:campagne" element={
-
-              <CampagneOverview />
-            }
-            />
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="admin/:campagne" element={<CampagneAdmin />} />
+            <Route path="/:campagne/:state" element={<ProductEdition />} />
+            <Route path="/:campagne" element={<CampagneOverview />} />
           </Routes>
         </HashRouter>
       </div>

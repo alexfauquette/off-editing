@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 
 import StepCard from "../components/StepCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ interface CampagneAdminProps {
 }
 
 const CampagneOverview = (props) => {
-  const { campagne }: CampagneAdminProps = useParams();;
+  const { campagne }: CampagneAdminProps = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
   React.useEffect(() => {

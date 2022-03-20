@@ -107,7 +107,7 @@ export const Component = (props: ComponentProps) => {
     if (!productDataIsLoading) {
       setImageListVisible(imgid === undefined);
     }
-  }, [productDataIsLoading, imgid])
+  }, [productDataIsLoading, imgid]);
 
   const openImages = () => {
     setImageListVisible(true);
@@ -118,8 +118,7 @@ export const Component = (props: ComponentProps) => {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <div style={{ height: "2rem", width: "100%" }}>{imageId}</div>
-      <div style={{ height: "2rem", width: "100%" }}>{src}</div>
+      <div style={{ height: "2rem", width: "100%" }}></div>
       <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
         {productDataIsLoading ? (
           <CircularProgress />
@@ -128,7 +127,7 @@ export const Component = (props: ComponentProps) => {
             src={src || `${process.env.PUBLIC_URL}/assets/not_selected.png`}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
-              currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`
+              currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`;
             }}
             style={{ height: "100%", width: "100%" }}
             guides={false}
@@ -163,7 +162,7 @@ export const Component = (props: ComponentProps) => {
   );
 };
 
-export const getError = ({ productData, state: { imageId, crop } }) => { };
+export const getError = ({ productData, state: { imageId, crop } }) => {};
 export const sendData = ({
   productData,
   state: { imageId, crop: cropData },

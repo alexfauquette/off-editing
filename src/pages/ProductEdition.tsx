@@ -12,13 +12,10 @@ import {
   updateInterface,
   LayoutObject,
 } from "../redux/editorData";
-import {
-  getProductUrl,
-  getProductEditUrl
-} from '../off/request'
+import { getProductUrl, getProductEditUrl } from "../off/request";
 
 import { RootState, AppDispatch } from "../redux/store";
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -230,10 +227,10 @@ const ProductEdition = (props) => {
     (state) => state.editorData.messages
   );
 
-  const subState = { ...(offState as object) }
+  const subState = { ...(offState as object) };
   if ((offState as any)?.images) {
     // @ts-ignore
-    subState.images = subState.images?.packaging_fr?.imgid
+    subState.images = subState.images?.packaging_fr?.imgid;
   }
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
@@ -250,8 +247,8 @@ const ProductEdition = (props) => {
           autoHideDuration={2000}
           onClose={() => handleCloseMessage(id)}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
+            vertical: "top",
+            horizontal: "center",
           }}
         >
           <Alert severity={status} sx={{ width: "100%" }}>
@@ -275,48 +272,61 @@ const ProductEdition = (props) => {
             </span>
           </Box>
           <Box sx={{ m: "1rem" }}>
-            {code && <>
-              <Link target="_blank" href={getProductUrl(code)} underline="none" sx={{ mr: "1rem" }}>
-                See
-              </Link>
-              <Link target="_blank" href={getProductEditUrl(code)} underline="none">
-                Edit
-              </Link>
-            </>
-            }
+            {code && (
+              <>
+                <Link
+                  target="_blank"
+                  href={getProductUrl(code)}
+                  underline="none"
+                  sx={{ mr: "1rem" }}
+                >
+                  See
+                </Link>
+                <Link
+                  target="_blank"
+                  href={getProductEditUrl(code)}
+                  underline="none"
+                >
+                  Edit
+                </Link>
+              </>
+            )}
           </Box>
         </Box>
-        {
-          process.env.NODE_ENV === 'development' && (<Paper>
+        {process.env.NODE_ENV === "development" && (
+          <Paper>
             <pre>{JSON.stringify(subState, null, 2)}</pre>
             <pre>{JSON.stringify(editorState, null, 2)}</pre>
-          </Paper>)}
+          </Paper>
+        )}
       </Paper>
-      {currentData ? (
-        <ResponsiveGridLayout
-          className="layout"
-          layout={layout}
-          cols={12}
-          rowHeight={100}
-          draggableCancel=".NotDraggable"
-          onResize={() => window.dispatchEvent(new Event("resize"))}
-          onResizeStop={() => window.dispatchEvent(new Event("resize"))}
-        >
-          {layout.map(({ i, id, ...other }) => (
-            <Box key={i}>
-              <Paper sx={{ width: "100%", height: "100%" }}>
-                <DragIndicatorIcon
-                  sx={{ position: "fixed", top: 1, right: 1, cursor: "grab" }}
-                />
-                {React.createElement(
-                  components[other.componentName].component,
-                  { id }
-                )}
-              </Paper>
-            </Box>
-          ))}
-        </ResponsiveGridLayout>
-      ) : null}
+      <Box sx={{ px: 2, py: 1 }}>
+        {currentData ? (
+          <ResponsiveGridLayout
+            className="layout"
+            layout={layout}
+            cols={12}
+            rowHeight={100}
+            draggableCancel=".NotDraggable"
+            onResize={() => window.dispatchEvent(new Event("resize"))}
+            onResizeStop={() => window.dispatchEvent(new Event("resize"))}
+          >
+            {layout.map(({ i, id, ...other }) => (
+              <Box key={i}>
+                <Paper sx={{ width: "100%", height: "100%" }}>
+                  <DragIndicatorIcon
+                    sx={{ position: "fixed", top: 1, right: 1, cursor: "grab" }}
+                  />
+                  {React.createElement(
+                    components[other.componentName].component,
+                    { id }
+                  )}
+                </Paper>
+              </Box>
+            ))}
+          </ResponsiveGridLayout>
+        ) : null}
+      </Box>
       <Paper sx={{ position: "sticky", bottom: 0, zIndex: 1 }}>
         <Box
           sx={{

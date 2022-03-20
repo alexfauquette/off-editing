@@ -81,14 +81,16 @@ export const PackagingTextComponent = (props: ComponentProps) => {
 
 export const getError = ({ productData, state: { text } }) => {
   if (!text || !text.trim()) {
-    return { message: "Le packaging est vide", severity: "error" } as ErrorInterface
+    return {
+      message: "Le packaging est vide",
+      severity: "error",
+    } as ErrorInterface;
   }
 };
 export const sendData = ({ productData, state: { text } }) => {
-
   const code = productData.code;
 
-  console.log(`Set "${text}" as packaging of ${code}`)
+  console.log(`Set "${text}" as packaging of ${code}`);
 };
 
 const module = {

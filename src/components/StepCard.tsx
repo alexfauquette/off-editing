@@ -6,7 +6,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { Link } from "react-router-dom";
 
-
 interface StepCardProps {
   title: string;
   campagne: string;
