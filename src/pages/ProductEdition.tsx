@@ -244,6 +244,10 @@ const ProductEdition = (props) => {
           open
           autoHideDuration={2000}
           onClose={() => handleCloseMessage(id)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
         >
           <Alert severity={status} sx={{ width: "100%" }}>
             {message}
@@ -326,7 +330,7 @@ const ProductEdition = (props) => {
             Skip
           </Button>
           <Button onClick={validate} variant="outlined" sx={{ mr: 1 }}>
-            validate
+            Validate
           </Button>
         </Box>
       </Paper>

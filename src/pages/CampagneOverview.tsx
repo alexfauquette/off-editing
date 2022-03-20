@@ -11,7 +11,6 @@ interface CampagneAdminProps {
 }
 
 const CampagneOverview = (props) => {
-  console.log(props)
   const { campagne }: CampagneAdminProps = useParams();;
   const dispatch = useDispatch<AppDispatch>();
 

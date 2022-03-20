@@ -149,18 +149,15 @@ export const Component = (props: ComponentProps) => {
   );
 };
 
-export const getError = ({ productData, state: { imageId, crop } }) => {};
+export const getError = ({ productData, state: { imageId, crop } }) => { };
 export const sendData = ({
   productData,
   state: { imageId, crop: cropData },
 }) => {
-  console.log({ cropData });
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
     productData?.images?.packaging_fr || {};
   const initialData =
     x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : undefined;
-
-  console.log({ initialData });
   if (
     initialData === undefined ||
     imageId !== imgid ||

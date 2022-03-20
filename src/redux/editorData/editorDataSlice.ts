@@ -2,11 +2,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import components from "../../components";
+import { ErrorInterface } from "../../components/models";
 import { removeCode } from "../offData";
 
 export const updateInterface = createAsyncThunk<
   void,
-  { campagne: string; processSate: number }
+  { campagne: string; processSate: number }, {
+    rejectValue: ErrorInterface
+  }
 >("offData/updateInterface", async ({ campagne, processSate }, thunkAPI) => {
   const currentState = thunkAPI.getState() as any;
 
@@ -68,9 +71,6 @@ export const validateData = createAsyncThunk<{ message?: string }>(
       });
     }
 
-    thunkAPI.dispatch(removeCode());
-    thunkAPI.dispatch(cleanData());
-
     // Step 1: validate data to send
     const evalutations = state.editorData.interface?.layout.map(
       ({ componentName, id }) =>
@@ -82,12 +82,14 @@ export const validateData = createAsyncThunk<{ message?: string }>(
 
     // If error detected returns the error message
     const errorIndex = evalutations.findIndex(
-      (message) => message && message.severity && message.severity === "error"
+      (errorMessage) => errorMessage && errorMessage.severity && errorMessage.severity === "error"
     );
     if (errorIndex >= 0) {
-      console.log("error1");
       return thunkAPI.rejectWithValue(evalutations[errorIndex]);
     }
+
+    thunkAPI.dispatch(removeCode());
+    thunkAPI.dispatch(cleanData());
 
     // TODO: allows this behavior
     // const warningIndex = evalutations.findIndex((message) => message && message.severity && message.severity === 'warning')
@@ -108,6 +110,7 @@ export const validateData = createAsyncThunk<{ message?: string }>(
         severity: "error",
       });
     }
+
 
     // Move to new state
     try {
@@ -232,9 +235,9 @@ export const editorDataSlice = createSlice({
       const id = uuid();
       state.messages.push({ id, message: payload.message, status: "info" });
     });
-    builder.addCase(validateData.rejected, (state, { error }) => {
+    builder.addCase(validateData.rejected, (state, { payload }: { payload }) => {
       const id = uuid();
-      state.messages.push({ id, message: error.message, status: "error" });
+      state.messages.push({ id, message: payload.message, status: payload.severity });
     });
     builder.addCase(validateData.pending, (state) => {
       const id = uuid();

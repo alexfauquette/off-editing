@@ -22,7 +22,6 @@ const WelcomePage = () => {
         `https://amathjourney.com/api/off-annotation/layout/`
       );
       if (!response.ok) {
-        console.log(response);
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
