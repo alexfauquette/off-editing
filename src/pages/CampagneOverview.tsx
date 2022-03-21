@@ -1,10 +1,15 @@
 import * as React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link as RouterLink } from "react-router-dom";
 
 import StepCard from "../components/StepCard";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { updateInterface } from "../redux/editorData";
+import Breadcrumbs from '@mui/material/Breadcrumbs'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+
+
 
 interface CampagneAdminProps {
   campagne?: string;
@@ -52,7 +57,12 @@ const CampagneOverview = (props) => {
 
   return (
     <div>
-      <p>campagne: {campagne}</p>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link component={RouterLink} underline="hover" color="inherit" to="/">
+          Campagnes
+        </Link>
+        <Typography color="text.primary">{campagne}</Typography>
+      </Breadcrumbs>
       <div>
         {campagneStates &&
           Object.keys(campagneStates)

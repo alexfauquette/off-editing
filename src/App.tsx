@@ -17,10 +17,11 @@ function App() {
   return (
     <Provider store={store}>
       <div>
+
         <HashRouter>
           <Routes>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="admin/:campagne" element={<CampagneAdmin />} />
+            <Route path="/:campagne/admin" element={<CampagneAdmin />} />
             <Route path="/:campagne/:state" element={<ProductEdition />} />
             <Route path="/:campagne" element={<CampagneOverview />} />
           </Routes>

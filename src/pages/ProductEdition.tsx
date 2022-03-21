@@ -15,7 +15,7 @@ import {
 import { getProductUrl, getProductEditUrl } from "../off/request";
 
 import { RootState, AppDispatch } from "../redux/store";
-import { useParams } from "react-router-dom";
+import { useParams, Link as RouterLink } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,6 +31,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+
+import Breadcrumbs from '@mui/material/Breadcrumbs'
+import Typography from '@mui/material/Typography'
 
 import AssistantPhotoRoundedIcon from "@mui/icons-material/AssistantPhotoRounded";
 
@@ -267,9 +270,19 @@ const ProductEdition = (props) => {
           }}
         >
           <Box sx={{ m: "1rem" }}>
-            <span>
-              Campagne: {campagne} (Step {state})
-            </span>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link component={RouterLink} underline="hover" color="inherit" to="/">
+                Campagnes
+              </Link>
+              <Link component={RouterLink}
+                underline="hover"
+                color="inherit"
+                to={`/${campagne}`}
+              >
+                {campagne}
+              </Link>
+              <Typography color="text.primary">Step {state}</Typography>
+            </Breadcrumbs>
           </Box>
           <Box sx={{ m: "1rem" }}>
             {code && (
