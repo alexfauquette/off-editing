@@ -8,15 +8,17 @@ import {
   DialogActions,
   ImageList,
   ImageListItem,
+  ImageListItemBar,
 } from "@mui/material";
 import { getImageUrl } from "../off/request";
+import { format } from "date-fns";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export interface ImageSelectorProps {
   isOpen: boolean;
   close: (e?: any) => void;
-  imagesIds: string[];
+  imagesIds: { id: string; uploaded_t: number; uploader: string }[];
   defaultId: string;
   selectImage: (newId: string) => void;
   code: string;
@@ -50,9 +52,9 @@ const ImageSelector = ({
           justifyContent: "space-between",
         }}
       >
-        <Box sx={{ width: "48%", height: "80vh" }}>
-          <ImageList cols={3}>
-            {imagesIds.map((id) => (
+        <Box sx={{ width: "33%", height: "80vh", maxHeight: "500px" }}>
+          <ImageList cols={1}>
+            {imagesIds.filter(({ uploaded_t }) => !!uploaded_t).map(({ id, uploaded_t, uploader }) => (
               <ImageListItem
                 key={id}
                 onClick={() => setSelectedId(id)}
@@ -65,13 +67,17 @@ const ImageSelector = ({
                   src={getImageUrl(code, id, "400")}
                   loading="lazy"
                 />
+                <ImageListItemBar
+                  title={format(new Date(uploaded_t * 1000), "MM/dd/yyyy")}
+                  subtitle={uploader}
+                />
               </ImageListItem>
             ))}
           </ImageList>
         </Box>
         <Box
           sx={{
-            width: "48%",
+            width: "60%",
             position: "sticky",
             top: 0,
           }}

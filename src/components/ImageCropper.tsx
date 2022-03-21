@@ -22,7 +22,14 @@ const extractImages = (images) => {
   if (!images) {
     return [];
   }
-  return Object.keys(images).filter((key) => !key.includes("_"));
+  return Object.keys(images)
+    .filter((key) => !key.includes("_"))
+    .map((key) => ({
+      id: key,
+      uploaded_t: parseInt(images[key].uploaded_t),
+      uploader: images[key].uploader,
+    }))
+    .sort((a, b) => b.uploaded_t - a.uploaded_t);
 };
 
 export const data_needed = ["images"];
@@ -162,7 +169,7 @@ export const Component = (props: ComponentProps) => {
   );
 };
 
-export const getError = ({ productData, state: { imageId, crop } }) => {};
+export const getError = ({ productData, state: { imageId, crop } }) => { };
 export const sendData = ({
   productData,
   state: { imageId, crop: cropData },
