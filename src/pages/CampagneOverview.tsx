@@ -5,11 +5,9 @@ import StepCard from "../components/StepCard";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { updateInterface } from "../redux/editorData";
-import Breadcrumbs from '@mui/material/Breadcrumbs'
-import Link from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
-
-
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 interface CampagneAdminProps {
   campagne?: string;

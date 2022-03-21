@@ -32,8 +32,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
-import Breadcrumbs from '@mui/material/Breadcrumbs'
-import Typography from '@mui/material/Typography'
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Typography from "@mui/material/Typography";
 
 import AssistantPhotoRoundedIcon from "@mui/icons-material/AssistantPhotoRounded";
 
@@ -271,10 +271,16 @@ const ProductEdition = (props) => {
         >
           <Box sx={{ m: "1rem" }}>
             <Breadcrumbs aria-label="breadcrumb">
-              <Link component={RouterLink} underline="hover" color="inherit" to="/">
+              <Link
+                component={RouterLink}
+                underline="hover"
+                color="inherit"
+                to="/"
+              >
                 Campagnes
               </Link>
-              <Link component={RouterLink}
+              <Link
+                component={RouterLink}
                 underline="hover"
                 color="inherit"
                 to={`/${campagne}`}

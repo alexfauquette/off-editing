@@ -17,7 +17,6 @@ function App() {
   return (
     <Provider store={store}>
       <div>
-
         <HashRouter>
           <Routes>
             <Route path="/" element={<WelcomePage />} />

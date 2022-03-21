@@ -54,25 +54,27 @@ const ImageSelector = ({
       >
         <Box sx={{ width: "33%", height: "80vh", maxHeight: "500px" }}>
           <ImageList cols={1}>
-            {imagesIds.filter(({ uploaded_t }) => !!uploaded_t).map(({ id, uploaded_t, uploader }) => (
-              <ImageListItem
-                key={id}
-                onClick={() => setSelectedId(id)}
-                sx={{
-                  border: id === selectedId ? "solid blue 1rem" : "",
-                }}
-              >
-                <img
-                  style={{ objectFit: "contain" }}
-                  src={getImageUrl(code, id, "400")}
-                  loading="lazy"
-                />
-                <ImageListItemBar
-                  title={format(new Date(uploaded_t * 1000), "MM/dd/yyyy")}
-                  subtitle={uploader}
-                />
-              </ImageListItem>
-            ))}
+            {imagesIds
+              .filter(({ uploaded_t }) => !!uploaded_t)
+              .map(({ id, uploaded_t, uploader }) => (
+                <ImageListItem
+                  key={id}
+                  onClick={() => setSelectedId(id)}
+                  sx={{
+                    border: id === selectedId ? "solid blue 1rem" : "",
+                  }}
+                >
+                  <img
+                    style={{ objectFit: "contain" }}
+                    src={getImageUrl(code, id, "400")}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={format(new Date(uploaded_t * 1000), "MM/dd/yyyy")}
+                    subtitle={uploader}
+                  />
+                </ImageListItem>
+              ))}
           </ImageList>
         </Box>
         <Box

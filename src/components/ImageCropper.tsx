@@ -63,7 +63,7 @@ export const Component = (props: ComponentProps) => {
 
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
     productData?.images?.packaging_fr || {};
-  const initialData = React.useMemo(
+  const initialData = React.useMemo<any>(
     () => (x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : {}),
     [x1, x2, y1, y2]
   );
@@ -138,8 +138,8 @@ export const Component = (props: ComponentProps) => {
             }}
             style={{ height: "100%", width: "100%" }}
             guides={false}
-            autoCrop={true}
-            data={initialData || undefined}
+            autoCrop={!!initialData}
+            data={(initialData && initialData?.x >= 0 && initialData?.height >= 0) ? initialData : undefined}
             cropend={handleCrop}
             checkCrossOrigin={false}
             ref={cropperRef}
