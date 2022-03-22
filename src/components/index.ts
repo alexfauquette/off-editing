@@ -1,12 +1,15 @@
 import { Component } from "./models";
-import PackagingImageCropperModule from "./ImageCropper";
+import { CropperPackagingFR as PackagingImageCropperModule, CropperNutritionFR, CropperIngredientsFR } from "./ImageCropper";
 import PackagingImageViewModule from "./PackagingImageView";
 import PackagingTextInputModule from "./PackagingTextComponent";
 
 const components: { [key: string]: Component } = {
-  PackagingImageCropperModule,
+  PackagingImageCropperModule, //TODO: remove
   PackagingImageViewModule,
   PackagingTextInputModule,
+  // CropperPackagingFR,
+  CropperNutritionFR,
+  CropperIngredientsFR,
 };
 
 export default components;

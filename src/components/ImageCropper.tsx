@@ -41,9 +41,12 @@ export interface stateInterface {
 
 interface ComponentProps {
   id: string;
+  imageKey: string;
 }
 
-export const Component = (props: ComponentProps) => {
+export const Component = ({ imageKey, id }: ComponentProps) => {
+  const imageType = imageKey.split('_')[0]
+
   const dispatch = useDispatch<AppDispatch>();
 
   const productData = useSelector<RootState>((state) => {
@@ -62,7 +65,7 @@ export const Component = (props: ComponentProps) => {
   const cropperRef = React.useRef<HTMLImageElement>(null);
 
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
-    productData?.images?.packaging_fr || {};
+    productData?.images?.[imageKey] || {};
   const initialData = React.useMemo<any>(
     () => (x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : {}),
     [x1, x2, y1, y2]
@@ -73,8 +76,8 @@ export const Component = (props: ComponentProps) => {
   }, [code, imgid]);
 
   React.useEffect(() => {
-    dispatch(upsertData({ editorId: props.id, data: { imageId } }));
-  }, [imageId, dispatch, props.id]);
+    dispatch(upsertData({ editorId: id, data: { imageId } }));
+  }, [imageId, dispatch, id]);
 
   const reset = React.useCallback(() => {
     const imageElement: any = cropperRef?.current;
@@ -82,9 +85,9 @@ export const Component = (props: ComponentProps) => {
     if (cropper) {
       cropper.reset();
       cropper.setData(initialData);
-      dispatch(upsertData({ editorId: props.id, data: { crop: initialData } }));
+      dispatch(upsertData({ editorId: id, data: { crop: initialData } }));
     }
-  }, [dispatch, initialData, props.id]);
+  }, [dispatch, initialData, id]);
 
   React.useEffect(() => {
     if (isReady) {
@@ -96,7 +99,7 @@ export const Component = (props: ComponentProps) => {
   const src = getImageUrl(
     productData?.code,
     imageId || imgid,
-    coordinates_image_size
+    coordinates_image_size || 400
   );
 
   const handleCrop = () => {
@@ -104,7 +107,7 @@ export const Component = (props: ComponentProps) => {
     const cropper: any = imageElement?.cropper;
     if (cropper) {
       const newData = cropper?.getData(true);
-      dispatch(upsertData({ editorId: props.id, data: { crop: newData } }));
+      dispatch(upsertData({ editorId: id, data: { crop: newData } }));
     }
   };
 
@@ -125,7 +128,7 @@ export const Component = (props: ComponentProps) => {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <div style={{ height: "2rem", width: "100%" }}></div>
+      <div style={{ height: "2rem", width: "100%" }}>{imageType} cropper {id}</div>
       <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
         {productDataIsLoading ? (
           <CircularProgress />
@@ -157,6 +160,7 @@ export const Component = (props: ComponentProps) => {
       </div>
       {imageListVisible && (
         <ImageSelector
+          imageType={imageType}
           isOpen={imageListVisible}
           close={closeImages}
           imagesIds={extractImages(productData?.images)}
@@ -169,13 +173,13 @@ export const Component = (props: ComponentProps) => {
   );
 };
 
-export const getError = ({ productData, state: { imageId, crop } }) => { };
-export const sendData = ({
+export const getError = (imageKey: string) => ({ productData, state: { imageId, crop } }) => { };
+export const sendData = (imageKey: string) => ({
   productData,
   state: { imageId, crop: cropData },
 }) => {
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
-    productData?.images?.packaging_fr || {};
+    productData?.images?.[imageKey] || {};
   const initialData =
     x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : undefined;
   if (
@@ -193,17 +197,39 @@ export const sendData = ({
     const x2 = cropData.x + cropData.width;
     const y2 = cropData.y + cropData.height;
     const coordinate = `x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
-    // axios.post(`https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`)
+    // axios.post(`https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}&${coordinate}`)
     console.log({
-      post: `https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=packaging_fr&code=${code}&imgid=${imageId}&${coordinate}`,
+      post: `https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}&${coordinate}`,
     });
   }
 };
 
 const module = {
-  component: Component,
-  getError,
-  sendData,
+  component: (props) => <Component {...props} imageKey='packaging_fr' />,
+  getError: getError('packaging_fr'),
+  sendData: sendData('packaging_fr'),
+  data_needed,
+};
+
+
+export const CropperPackagingFR = {
+  component: (props) => <Component {...props} imageKey='packaging_fr' />,
+  getError: getError('packaging_fr'),
+  sendData: sendData('packaging_fr'),
+  data_needed,
+};
+
+export const CropperNutritionFR = {
+  component: (props) => <Component {...props} imageKey='nutrition_fr' />,
+  getError: getError('nutrition_fr'),
+  sendData: sendData('nutrition_fr'),
+  data_needed,
+};
+
+export const CropperIngredientsFR = {
+  component: (props) => <Component {...props} imageKey='ingredients_fr' />,
+  getError: getError('ingredients_fr'),
+  sendData: sendData('ingredients_fr'),
   data_needed,
 };
 

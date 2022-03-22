@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export interface ImageSelectorProps {
+  imageType: string;
   isOpen: boolean;
   close: (e?: any) => void;
   imagesIds: { id: string; uploaded_t: number; uploader: string }[];
@@ -25,6 +26,7 @@ export interface ImageSelectorProps {
 }
 
 const ImageSelector = ({
+  imageType,
   isOpen,
   close,
   imagesIds,
@@ -44,7 +46,7 @@ const ImageSelector = ({
 
   return (
     <Dialog fullWidth maxWidth="xl" open={isOpen} onClose={close}>
-      <DialogTitle>Select Packaging Image</DialogTitle>
+      <DialogTitle>Select {imageType} image</DialogTitle>
       <DialogContent
         sx={{
           display: "flex",
