@@ -3,20 +3,27 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Button } from "@mui/material";
-import { getImageUrl } from "../off/request";
+import { getImageUrl, getProductUrl } from "../off/request";
 import { RootState, AppDispatch } from "../redux/store";
 
 import { useDispatch, useSelector } from "react-redux";
 import { upsertData } from "../redux/editorData/editorDataSlice";
 
 import ImageSelector from "./ImageSelector";
+import axios from "axios";
 
-const getInitialCrop = ({ x1, x2, y1, y2 }) => ({
-  x: parseFloat(x1),
-  y: parseFloat(y1),
-  width: x2 - x1,
-  height: y2 - y1,
-});
+const getInitialCrop = ({ x1, x2, y1, y2 }) => {
+  if (x1 === -1 || x1 == null || x1 === "-1" || x1 === x2 || y1 === y2) {
+    return { fullImage: true }
+  }
+  return {
+    fullImage: false,
+    x: parseFloat(x1),
+    y: parseFloat(y1),
+    width: x2 - x1,
+    height: y2 - y1,
+  }
+};
 
 const extractImages = (images) => {
   if (!images) {
@@ -67,7 +74,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
     productData?.images?.[imageKey] || {};
   const initialData = React.useMemo<any>(
-    () => (x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : {}),
+    () => getInitialCrop({ x1, x2, y1, y2 }),
     [x1, x2, y1, y2]
   );
 
@@ -84,8 +91,24 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     const cropper: any = imageElement?.cropper;
     if (cropper) {
       cropper.reset();
-      cropper.setData(initialData);
+      if (initialData.fullImage) {
+        const { naturalWidth, naturalHeight } = cropper.getImageData()
+        cropper.setData({ x: 0, y: 0, width: naturalWidth, height: naturalHeight })
+      }
+      else { cropper.setData(initialData); }
       dispatch(upsertData({ editorId: id, data: { crop: initialData } }));
+    }
+  }, [dispatch, initialData, id]);
+
+  const selectFullImage = React.useCallback(() => {
+    const imageElement: any = cropperRef?.current;
+    const cropper: any = imageElement?.cropper;
+    if (cropper) {
+      cropper.reset();
+      const { naturalWidth, naturalHeight } = cropper.getImageData()
+      cropper.setData({ x: 0, y: 0, width: naturalWidth, height: naturalHeight })
+
+      dispatch(upsertData({ editorId: id, data: { crop: { fullImage: true } } }));
     }
   }, [dispatch, initialData, id]);
 
@@ -107,7 +130,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     const cropper: any = imageElement?.cropper;
     if (cropper) {
       const newData = cropper?.getData(true);
-      dispatch(upsertData({ editorId: id, data: { crop: newData } }));
+      dispatch(upsertData({ editorId: id, data: { crop: { ...newData, fullImage: false } } }));
     }
   };
 
@@ -154,9 +177,9 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
         )}
       </div>
       <div style={{ height: "3rem" }}>
-        <Button onClick={reset}>Reset</Button>
-
         <Button onClick={openImages}>Other Image</Button>
+        <Button onClick={reset}>Reset</Button>
+        <Button onClick={selectFullImage}>Full image</Button>
       </div>
       {imageListVisible && (
         <ImageSelector
@@ -180,27 +203,29 @@ export const sendData = (imageKey: string) => ({
 }) => {
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
     productData?.images?.[imageKey] || {};
-  const initialData =
-    x1 !== undefined ? getInitialCrop({ x1, x2, y1, y2 }) : undefined;
-  if (
-    initialData === undefined ||
+  const initialData = getInitialCrop({ x1, x2, y1, y2 });
+
+  const hasBeenModified = initialData.fullImage !== cropData.fullImage ||
     imageId !== imgid ||
     // verify the crop has been modified
     Math.abs(cropData.x - initialData.x) > 10 ||
     Math.abs(cropData.y - initialData.y) > 10 ||
     Math.abs(cropData.width - initialData.width) > 20 ||
     Math.abs(cropData.height - initialData.height) > 20
+  if (imageId && hasBeenModified
   ) {
     const code = productData.code;
     const x1 = cropData.x;
     const y1 = cropData.y;
     const x2 = cropData.x + cropData.width;
     const y2 = cropData.y + cropData.height;
-    const coordinate = `x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
-    // axios.post(`https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}&${coordinate}`)
-    console.log({
-      post: `https://world.openfoodfacts.net/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}&${coordinate}`,
-    });
+    const coordinate = cropData.fullImage ? "" : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
+    const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${coordinates_image_size || 400}`
+    axios.post(postRequest)
+    console.log(`updated: ${getProductUrl(code)}`)
+    // console.log({
+    //   post: postRequest,
+    // });
   }
 };
 
