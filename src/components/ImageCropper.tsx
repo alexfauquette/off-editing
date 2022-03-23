@@ -2,12 +2,20 @@ import * as React from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Drawer,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+} from "@mui/material";
 import { getImageUrl, getProductUrl } from "../off/request";
 import { RootState, AppDispatch } from "../redux/store";
 
 import { useDispatch, useSelector } from "react-redux";
 import { upsertData } from "../redux/editorData/editorDataSlice";
+
+import { format } from "date-fns";
 
 import ImageSelector from "./ImageSelector";
 import axios from "axios";
@@ -92,8 +100,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     if (cropper) {
       cropper.reset();
       if (initialData.fullImage) {
-        const { naturalWidth, naturalHeight } = cropper.getImageData()
-        cropper.setData({ x: 0, y: 0, width: naturalWidth, height: naturalHeight })
+        cropper.clear();
       }
       else { cropper.setData(initialData); }
       dispatch(upsertData({ editorId: id, data: { crop: initialData } }));
@@ -104,9 +111,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     const imageElement: any = cropperRef?.current;
     const cropper: any = imageElement?.cropper;
     if (cropper) {
-      cropper.reset();
-      const { naturalWidth, naturalHeight } = cropper.getImageData()
-      cropper.setData({ x: 0, y: 0, width: naturalWidth, height: naturalHeight })
+      cropper.clear();
 
       dispatch(upsertData({ editorId: id, data: { crop: { fullImage: true } } }));
     }
@@ -149,39 +154,83 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     setImageListVisible(false);
   };
 
+
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <div style={{ height: "2rem", width: "100%" }}>{imageType} cropper {id}</div>
-      <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
-        {productDataIsLoading ? (
-          <CircularProgress />
-        ) : (
-          <Cropper
-            src={src || `${process.env.PUBLIC_URL}/assets/not_selected.png`}
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null; // prevents looping
-              currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`;
-            }}
-            style={{ height: "100%", width: "100%" }}
-            guides={false}
-            autoCrop={!!initialData}
-            data={(initialData && initialData?.x >= 0 && initialData?.height >= 0) ? initialData : undefined}
-            cropend={handleCrop}
-            checkCrossOrigin={false}
-            ref={cropperRef}
-            viewMode={1}
-            minContainerHeight={100}
-            minContainerWidth={100}
-            ready={() => setIsReady(true)}
-          />
-        )}
+      <Drawer
+        sx={{
+          width: '30%',
+          flexShrink: 0,
+          maxHeight: "100%",
+          '& .MuiDrawer-paper': {
+            width: '30%',
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={imageListVisible}
+      >
+        <Button onClick={() => closeImages()}>Close</Button>
+        <ImageList cols={1}>
+          {extractImages(productData?.images)
+            .filter(({ uploaded_t }) => !!uploaded_t)
+            .map(({ id, uploaded_t, uploader }) => (
+              <ImageListItem
+                key={id}
+                onClick={() => setImageId(id)}
+                sx={{
+                  border: id === imageId ? "solid blue 1rem" : "",
+                }}
+              >
+                <img
+                  style={{ objectFit: "contain" }}
+                  src={getImageUrl(code, id, "400")}
+                  loading="lazy"
+                />
+                <ImageListItemBar
+                  title={format(new Date(uploaded_t * 1000), "MM/dd/yyyy")}
+                  subtitle={uploader}
+                />
+              </ImageListItem>
+            ))}
+        </ImageList>
+      </Drawer>
+      <div style={{ height: '100%', width: imageListVisible ? "70%" : "100%", marginLeft: imageListVisible ? '30%' : 0 }}>
+
+        <div style={{ height: "2rem", width: '100%' }}>{imageType} cropper {id}</div>
+        <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
+          {productDataIsLoading ? (
+            <CircularProgress />
+          ) : (
+            <Cropper
+              src={src || `${process.env.PUBLIC_URL}/assets/not_selected.png`}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = `${process.env.PUBLIC_URL}/assets/404.png`;
+              }}
+              style={{ height: "100%", width: "100%" }}
+              guides={false}
+              autoCrop={!!initialData}
+              data={(initialData && initialData?.x >= 0 && initialData?.height >= 0) ? initialData : undefined}
+              cropend={handleCrop}
+              checkCrossOrigin={false}
+              ref={cropperRef}
+              viewMode={1}
+              minContainerHeight={100}
+              minContainerWidth={100}
+              ready={() => setIsReady(true)}
+            />
+          )}
+        </div>
+        <div style={{ height: "3rem" }}>
+          <Button onClick={openImages}>Other Image</Button>
+          <Button onClick={reset}>Reset</Button>
+          <Button onClick={selectFullImage}>Full image</Button>
+        </div>
       </div>
-      <div style={{ height: "3rem" }}>
-        <Button onClick={openImages}>Other Image</Button>
-        <Button onClick={reset}>Reset</Button>
-        <Button onClick={selectFullImage}>Full image</Button>
-      </div>
-      {imageListVisible && (
+      {/* {imageListVisible && (
         <ImageSelector
           imageType={imageType}
           isOpen={imageListVisible}
@@ -191,7 +240,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
           defaultId={imageId}
           code={productData?.code}
         />
-      )}
+      )} */}
     </div>
   );
 };
@@ -223,9 +272,6 @@ export const sendData = (imageKey: string) => ({
     const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${coordinates_image_size || 400}`
     axios.get(postRequest)
     console.log(`updated: ${getProductUrl(code)}`)
-    // console.log({
-    //   post: postRequest,
-    // });
   }
 };
 
