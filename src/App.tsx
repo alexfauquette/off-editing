@@ -7,7 +7,7 @@ import CampagneAdmin from "./pages/CampagneAdmin";
 import ProductEdition from "./pages/ProductEdition";
 import CampagneOverview from "./pages/CampagneOverview";
 import WelcomePage from "./pages/WelcomePage";
-
+import CampagneCreation from "./pages/CampagneCreation";
 import "./App.css";
 
 import "./styles/rr.css";
@@ -23,6 +23,7 @@ function App() {
             <Route path="/:campagne/admin" element={<CampagneAdmin />} />
             <Route path="/:campagne/:state" element={<ProductEdition />} />
             <Route path="/:campagne" element={<CampagneOverview />} />
+            <Route path="/createCampagne" element={<CampagneCreation />} />
           </Routes>
         </HashRouter>
       </div>
