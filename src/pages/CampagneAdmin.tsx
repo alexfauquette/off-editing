@@ -33,7 +33,6 @@ import { AppDispatch, RootState } from "../redux/store";
 import { updateInterface } from "../redux/editorData";
 import { getProductEditUrl, getProductUrl } from "../off/request";
 
-
 const fetchData = (campagne: string, flag: boolean, state: number) =>
   axios.get(
     `https://amathjourney.com/api/off-annotation/data/${campagne}?flag=${flag}&state=${state}`
@@ -42,9 +41,11 @@ const fetchData = (campagne: string, flag: boolean, state: number) =>
 const useDataFetching = (campagne: string, flag: boolean, state: number) => {
   const [loading, setLoading] = React.useState(true);
   const [rows, setRows] = React.useState([]);
-  const [index, setIndex] = React.useState(0)
+  const [index, setIndex] = React.useState(0);
 
-  const refresh = React.useCallback(() => { setIndex(i => i + 1) }, [])
+  const refresh = React.useCallback(() => {
+    setIndex((i) => i + 1);
+  }, []);
 
   React.useEffect(() => {
     let setData = true;
@@ -94,7 +95,7 @@ const CampagneAdmin = (props) => {
 
   const removeFlag = React.useCallback(
     (row) => {
-      console.log(row)
+      console.log(row);
       if (!campagne || !row.code || row.state === undefined) {
         return;
       }
@@ -112,49 +113,59 @@ const CampagneAdmin = (props) => {
 
   const { loading, rows, refresh } = useDataFetching(campagne, flag, step);
 
-  const columns: GridColumns = React.useMemo(() => [
-    { field: "code", width: 200 },
-    { field: "campagne", width: 200 },
-    { field: "note", valueGetter: ({ row }) => row?.data?.label, flex: 1 },
-    {
-      field: "actions",
-      type: "actions",
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          icon={
-            <Tooltip title="See product page">
-              <VisibilityRoundedIcon />
-            </Tooltip>
-          }
-          label="See product page"
-          onClick={() => window.open(getProductUrl(params.row.code), '_blank')
-
-
-
-          }
-        />,
-        <GridActionsCellItem icon={
-          <Tooltip title="Edit product page">
-            <EditRoundedIcon /></Tooltip>} label="Edit product page"
-          onClick={() => window.open(getProductEditUrl(params.row.code), '_blank')}
-        />,
-        ...(params.row.flag ? [<GridActionsCellItem
-          icon={
-            <Tooltip title="Remove Flag">
-              <RestoreFromTrashSharpIcon />
-            </Tooltip>
-          }
-          label="Remove Flag"
-          onClick={async () => {
-            await removeFlag(params.row);
-            refresh()
-          }}
-        />] : []),
-      ],
-      width: 200,
-    },
-  ], [removeFlag, campagne]);
-
+  const columns: GridColumns = React.useMemo(
+    () => [
+      { field: "code", width: 200 },
+      { field: "campagne", width: 200 },
+      { field: "note", valueGetter: ({ row }) => row?.data?.label, flex: 1 },
+      {
+        field: "actions",
+        type: "actions",
+        getActions: (params: GridRowParams) => [
+          <GridActionsCellItem
+            icon={
+              <Tooltip title="See product page">
+                <VisibilityRoundedIcon />
+              </Tooltip>
+            }
+            label="See product page"
+            onClick={() =>
+              window.open(getProductUrl(params.row.code), "_blank")
+            }
+          />,
+          <GridActionsCellItem
+            icon={
+              <Tooltip title="Edit product page">
+                <EditRoundedIcon />
+              </Tooltip>
+            }
+            label="Edit product page"
+            onClick={() =>
+              window.open(getProductEditUrl(params.row.code), "_blank")
+            }
+          />,
+          ...(params.row.flag
+            ? [
+                <GridActionsCellItem
+                  icon={
+                    <Tooltip title="Remove Flag">
+                      <RestoreFromTrashSharpIcon />
+                    </Tooltip>
+                  }
+                  label="Remove Flag"
+                  onClick={async () => {
+                    await removeFlag(params.row);
+                    refresh();
+                  }}
+                />,
+              ]
+            : []),
+        ],
+        width: 200,
+      },
+    ],
+    [removeFlag, campagne]
+  );
 
   return (
     <Box>

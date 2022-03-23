@@ -1,5 +1,9 @@
 import { Component } from "./models";
-import { CropperPackagingFR as PackagingImageCropperModule, CropperNutritionFR, CropperIngredientsFR } from "./ImageCropper";
+import {
+  CropperPackagingFR as PackagingImageCropperModule,
+  CropperNutritionFR,
+  CropperIngredientsFR,
+} from "./ImageCropper";
 import PackagingImageViewModule from "./PackagingImageView";
 import PackagingTextInputModule from "./PackagingTextComponent";
 

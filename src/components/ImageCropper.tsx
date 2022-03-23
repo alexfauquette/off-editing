@@ -22,7 +22,7 @@ import axios from "axios";
 
 const getInitialCrop = ({ x1, x2, y1, y2 }) => {
   if (x1 === -1 || x1 == null || x1 === "-1" || x1 === x2 || y1 === y2) {
-    return { fullImage: true }
+    return { fullImage: true };
   }
   return {
     fullImage: false,
@@ -30,7 +30,7 @@ const getInitialCrop = ({ x1, x2, y1, y2 }) => {
     y: parseFloat(y1),
     width: x2 - x1,
     height: y2 - y1,
-  }
+  };
 };
 
 const extractImages = (images) => {
@@ -60,7 +60,7 @@ interface ComponentProps {
 }
 
 export const Component = ({ imageKey, id }: ComponentProps) => {
-  const imageType = imageKey.split('_')[0]
+  const imageType = imageKey.split("_")[0];
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -101,8 +101,9 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
       cropper.reset();
       if (initialData.fullImage) {
         cropper.clear();
+      } else {
+        cropper.setData(initialData);
       }
-      else { cropper.setData(initialData); }
       dispatch(upsertData({ editorId: id, data: { crop: initialData } }));
     }
   }, [dispatch, initialData, id]);
@@ -113,7 +114,9 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     if (cropper) {
       cropper.clear();
 
-      dispatch(upsertData({ editorId: id, data: { crop: { fullImage: true } } }));
+      dispatch(
+        upsertData({ editorId: id, data: { crop: { fullImage: true } } })
+      );
     }
   }, [dispatch, initialData, id]);
 
@@ -135,7 +138,12 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     const cropper: any = imageElement?.cropper;
     if (cropper) {
       const newData = cropper?.getData(true);
-      dispatch(upsertData({ editorId: id, data: { crop: { ...newData, fullImage: false } } }));
+      dispatch(
+        upsertData({
+          editorId: id,
+          data: { crop: { ...newData, fullImage: false } },
+        })
+      );
     }
   };
 
@@ -154,18 +162,16 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     setImageListVisible(false);
   };
 
-
-
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Drawer
         sx={{
-          width: '30%',
+          width: "30%",
           flexShrink: 0,
           maxHeight: "100%",
-          '& .MuiDrawer-paper': {
-            width: '30%',
-            boxSizing: 'border-box',
+          "& .MuiDrawer-paper": {
+            width: "30%",
+            boxSizing: "border-box",
           },
         }}
         variant="persistent"
@@ -197,9 +203,16 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
             ))}
         </ImageList>
       </Drawer>
-      <div style={{ height: '100%', width: imageListVisible ? "70%" : "100%", marginLeft: imageListVisible ? '30%' : 0 }}>
-
-        <div style={{ height: "2rem", width: '100%' }}>{imageType} cropper {id}</div>
+      <div
+        style={{
+          height: "100%",
+          width: imageListVisible ? "70%" : "100%",
+          marginLeft: imageListVisible ? "30%" : 0,
+        }}
+      >
+        <div style={{ height: "2rem", width: "100%" }}>
+          {imageType} cropper {id}
+        </div>
         <div style={{ height: "calc(100% - 5rem)", width: "100%" }}>
           {productDataIsLoading ? (
             <CircularProgress />
@@ -213,7 +226,11 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
               style={{ height: "100%", width: "100%" }}
               guides={false}
               autoCrop={!!initialData}
-              data={(initialData && initialData?.x >= 0 && initialData?.height >= 0) ? initialData : undefined}
+              data={
+                initialData && initialData?.x >= 0 && initialData?.height >= 0
+                  ? initialData
+                  : undefined
+              }
               cropend={handleCrop}
               checkCrossOrigin={false}
               ref={cropperRef}
@@ -245,62 +262,66 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
   );
 };
 
-export const getError = (imageKey: string) => ({ productData, state: { imageId, crop } }) => { };
-export const sendData = (imageKey: string) => ({
-  productData,
-  state: { imageId, crop: cropData },
-}) => {
-  const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
-    productData?.images?.[imageKey] || {};
-  const initialData = getInitialCrop({ x1, x2, y1, y2 });
+export const getError =
+  (imageKey: string) =>
+  ({ productData, state: { imageId, crop } }) => {};
+export const sendData =
+  (imageKey: string) =>
+  ({ productData, state: { imageId, crop: cropData } }) => {
+    const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
+      productData?.images?.[imageKey] || {};
+    const initialData = getInitialCrop({ x1, x2, y1, y2 });
 
-  const hasBeenModified = initialData.fullImage !== cropData.fullImage ||
-    imageId !== imgid ||
-    // verify the crop has been modified
-    Math.abs(cropData.x - initialData.x) > 10 ||
-    Math.abs(cropData.y - initialData.y) > 10 ||
-    Math.abs(cropData.width - initialData.width) > 20 ||
-    Math.abs(cropData.height - initialData.height) > 20
-  if (imageId && hasBeenModified
-  ) {
-    const code = productData.code;
-    const x1 = cropData.x;
-    const y1 = cropData.y;
-    const x2 = cropData.x + cropData.width;
-    const y2 = cropData.y + cropData.height;
-    const coordinate = cropData.fullImage ? "" : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
-    const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${coordinates_image_size || 400}`
-    axios.get(postRequest)
-    console.log(`updated: ${getProductUrl(code)}`)
-  }
-};
+    const hasBeenModified =
+      initialData.fullImage !== cropData.fullImage ||
+      imageId !== imgid ||
+      // verify the crop has been modified
+      Math.abs(cropData.x - initialData.x) > 10 ||
+      Math.abs(cropData.y - initialData.y) > 10 ||
+      Math.abs(cropData.width - initialData.width) > 20 ||
+      Math.abs(cropData.height - initialData.height) > 20;
+    if (imageId && hasBeenModified) {
+      const code = productData.code;
+      const x1 = cropData.x;
+      const y1 = cropData.y;
+      const x2 = cropData.x + cropData.width;
+      const y2 = cropData.y + cropData.height;
+      const coordinate = cropData.fullImage
+        ? ""
+        : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
+      const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${
+        coordinates_image_size || 400
+      }`;
+      axios.get(postRequest);
+      console.log(`updated: ${getProductUrl(code)}`);
+    }
+  };
 
 const module = {
-  component: (props) => <Component {...props} imageKey='packaging_fr' />,
-  getError: getError('packaging_fr'),
-  sendData: sendData('packaging_fr'),
+  component: (props) => <Component {...props} imageKey="packaging_fr" />,
+  getError: getError("packaging_fr"),
+  sendData: sendData("packaging_fr"),
   data_needed,
 };
 
-
 export const CropperPackagingFR = {
-  component: (props) => <Component {...props} imageKey='packaging_fr' />,
-  getError: getError('packaging_fr'),
-  sendData: sendData('packaging_fr'),
+  component: (props) => <Component {...props} imageKey="packaging_fr" />,
+  getError: getError("packaging_fr"),
+  sendData: sendData("packaging_fr"),
   data_needed,
 };
 
 export const CropperNutritionFR = {
-  component: (props) => <Component {...props} imageKey='nutrition_fr' />,
-  getError: getError('nutrition_fr'),
-  sendData: sendData('nutrition_fr'),
+  component: (props) => <Component {...props} imageKey="nutrition_fr" />,
+  getError: getError("nutrition_fr"),
+  sendData: sendData("nutrition_fr"),
   data_needed,
 };
 
 export const CropperIngredientsFR = {
-  component: (props) => <Component {...props} imageKey='ingredients_fr' />,
-  getError: getError('ingredients_fr'),
-  sendData: sendData('ingredients_fr'),
+  component: (props) => <Component {...props} imageKey="ingredients_fr" />,
+  getError: getError("ingredients_fr"),
+  sendData: sendData("ingredients_fr"),
   data_needed,
 };
 

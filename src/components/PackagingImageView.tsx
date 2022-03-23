@@ -26,7 +26,9 @@ export const PackagingImageView = (props: PackagingImageViewProps) => {
 
   const productDataIsLoading = !productData || productData.isLoading;
 
-  const src = productData?.image_packaging_url || `${process.env.PUBLIC_URL}/assets/not_selected.png`;
+  const src =
+    productData?.image_packaging_url ||
+    `${process.env.PUBLIC_URL}/assets/not_selected.png`;
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
@@ -67,8 +69,8 @@ export const PackagingImageView = (props: PackagingImageViewProps) => {
   );
 };
 
-export const getError = () => { };
-export const sendData = () => { };
+export const getError = () => {};
+export const sendData = () => {};
 
 const module = {
   component: PackagingImageView,
