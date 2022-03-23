@@ -221,7 +221,7 @@ export const sendData = (imageKey: string) => ({
     const y2 = cropData.y + cropData.height;
     const coordinate = cropData.fullImage ? "" : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
     const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${coordinates_image_size || 400}`
-    axios.post(postRequest)
+    axios.get(postRequest)
     console.log(`updated: ${getProductUrl(code)}`)
     // console.log({
     //   post: postRequest,
