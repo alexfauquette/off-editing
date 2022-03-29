@@ -2,6 +2,8 @@ import * as React from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import CircularProgress from "@mui/material/CircularProgress";
+import RotateLeftRoundedIcon from "@mui/icons-material/RotateLeftRounded";
+import RotateRightRoundedIcon from "@mui/icons-material/RotateRightRounded";
 import {
   Button,
   Drawer,
@@ -20,9 +22,12 @@ import { format } from "date-fns";
 import ImageSelector from "./ImageSelector";
 import axios from "axios";
 
-const getInitialCrop = ({ x1, x2, y1, y2 }) => {
+const getInitialCrop = ({ x1, x2, y1, y2, angle }) => {
   if (x1 === -1 || x1 == null || x1 === "-1" || x1 === x2 || y1 === y2) {
-    return { fullImage: true };
+    return {
+      fullImage: true,
+      rotate: parseInt(angle || "0"),
+    };
   }
   return {
     fullImage: false,
@@ -30,6 +35,7 @@ const getInitialCrop = ({ x1, x2, y1, y2 }) => {
     y: parseFloat(y1),
     width: x2 - x1,
     height: y2 - y1,
+    rotate: parseInt(angle || "0"),
   };
 };
 
@@ -71,6 +77,11 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
     return state.offData.data[state.offData.codes[0]];
   }) as any;
 
+  const editorData = useSelector<RootState>(
+    // @ts-ignore
+    (state) => state.editorData.data[id]?.crop || {}
+  ) as any;
+
   const productDataIsLoading = !productData || productData.isLoading;
   const code = productData.code;
 
@@ -82,8 +93,8 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
   const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
     productData?.images?.[imageKey] || {};
   const initialData = React.useMemo<any>(
-    () => getInitialCrop({ x1, x2, y1, y2 }),
-    [x1, x2, y1, y2]
+    () => getInitialCrop({ x1, x2, y1, y2, angle }),
+    [x1, x2, y1, y2, angle]
   );
 
   React.useEffect(() => {
@@ -101,6 +112,7 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
       cropper.reset();
       if (initialData.fullImage) {
         cropper.clear();
+        cropper.rotateTo(initialData.rotate);
       } else {
         cropper.setData(initialData);
       }
@@ -115,7 +127,10 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
       cropper.clear();
 
       dispatch(
-        upsertData({ editorId: id, data: { crop: { fullImage: true } } })
+        upsertData({
+          editorId: id,
+          data: { crop: { rotate: editorData?.rotate, fullImage: true } },
+        })
       );
     }
   }, [dispatch, initialData, id]);
@@ -142,6 +157,29 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
         upsertData({
           editorId: id,
           data: { crop: { ...newData, fullImage: false } },
+        })
+      );
+    }
+  };
+
+  const rotate = (direction: 1 | -1) => {
+    const imageElement: any = cropperRef?.current;
+    const cropper: any = imageElement?.cropper;
+    if (cropper) {
+      const newAngle = (editorData.rotate + 360 + 90 * direction) % 360;
+      const newData = cropper?.getData(true);
+      cropper?.setData({ ...newData, rotate: newAngle });
+      console.log({ right: newData });
+      dispatch(
+        upsertData({
+          editorId: id,
+          data: {
+            crop: {
+              ...newData,
+              rotate: newAngle,
+              fullImage: editorData?.fullImage,
+            },
+          },
         })
       );
     }
@@ -241,10 +279,26 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
             />
           )}
         </div>
-        <div style={{ height: "3rem" }}>
-          <Button onClick={openImages}>Other Image</Button>
-          <Button onClick={reset}>Reset</Button>
-          <Button onClick={selectFullImage}>Full image</Button>
+        <div
+          style={{
+            height: "3rem",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <Button onClick={openImages}>Other Image</Button>
+            <Button onClick={reset}>Reset</Button>
+            <Button onClick={selectFullImage}>Full image</Button>
+          </div>
+          <div>
+            <Button onClick={() => rotate(1)}>
+              <RotateLeftRoundedIcon />
+            </Button>
+            <Button onClick={() => rotate(-1)}>
+              <RotateRightRoundedIcon />
+            </Button>
+          </div>
         </div>
       </div>
       {/* {imageListVisible && (
@@ -264,38 +318,39 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
 
 export const getError =
   (imageKey: string) =>
-  ({ productData, state: { imageId, crop } }) => {};
+    ({ productData, state: { imageId, crop } }) => { };
 export const sendData =
   (imageKey: string) =>
-  ({ productData, state: { imageId, crop: cropData } }) => {
-    const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
-      productData?.images?.[imageKey] || {};
-    const initialData = getInitialCrop({ x1, x2, y1, y2 });
+    ({ productData, state: { imageId, crop: cropData } }) => {
+      const { angle, coordinates_image_size, imgid, x1, x2, y1, y2 } =
+        productData?.images?.[imageKey] || {};
+      const initialData = getInitialCrop({ x1, x2, y1, y2, angle });
 
-    const hasBeenModified =
-      initialData.fullImage !== cropData.fullImage ||
-      imageId !== imgid ||
-      // verify the crop has been modified
-      Math.abs(cropData.x - initialData.x) > 10 ||
-      Math.abs(cropData.y - initialData.y) > 10 ||
-      Math.abs(cropData.width - initialData.width) > 20 ||
-      Math.abs(cropData.height - initialData.height) > 20;
-    if (imageId && hasBeenModified) {
-      const code = productData.code;
-      const x1 = cropData.x;
-      const y1 = cropData.y;
-      const x2 = cropData.x + cropData.width;
-      const y2 = cropData.y + cropData.height;
-      const coordinate = cropData.fullImage
-        ? ""
-        : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
-      const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}&coordinates_image_size=${
-        coordinates_image_size || 400
-      }`;
-      axios.get(postRequest);
-      console.log(`updated: ${getProductUrl(code)}`);
-    }
-  };
+      const hasBeenModified =
+        initialData.rotate !== cropData.rotate ||
+        initialData.fullImage !== cropData.fullImage ||
+        imageId !== imgid ||
+        // verify the crop has been modified
+        Math.abs(cropData.x - initialData.x) > 10 ||
+        Math.abs(cropData.y - initialData.y) > 10 ||
+        Math.abs(cropData.width - initialData.width) > 20 ||
+        Math.abs(cropData.height - initialData.height) > 20;
+      if (imageId && hasBeenModified) {
+        const code = productData.code;
+        const x1 = cropData.x;
+        const y1 = cropData.y;
+        const x2 = cropData.x + cropData.width;
+        const y2 = cropData.y + cropData.height;
+        const coordinate = cropData.fullImage
+          ? ""
+          : `&x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
+        const rotation = cropData.rotate ? `&angle=${cropData.rotate}` : "";
+        const postRequest = `https://fr.openfoodfacts.org/cgi/product_image_crop.pl?id=${imageKey}&code=${code}&imgid=${imageId}${coordinate}${rotation}&coordinates_image_size=${coordinates_image_size || 400
+          }`;
+        axios.get(postRequest);
+        console.log(`updated: ${getProductUrl(code)}`);
+      }
+    };
 
 const module = {
   component: (props) => <Component {...props} imageKey="packaging_fr" />,
