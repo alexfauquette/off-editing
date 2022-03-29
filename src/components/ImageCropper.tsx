@@ -292,10 +292,10 @@ export const Component = ({ imageKey, id }: ComponentProps) => {
             <Button onClick={selectFullImage}>Full image</Button>
           </div>
           <div>
-            <Button onClick={() => rotate(1)}>
+            <Button onClick={() => rotate(-1)}>
               <RotateLeftRoundedIcon />
             </Button>
-            <Button onClick={() => rotate(-1)}>
+            <Button onClick={() => rotate(1)}>
               <RotateRightRoundedIcon />
             </Button>
           </div>
